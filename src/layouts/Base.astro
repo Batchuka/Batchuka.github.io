@@ -1,0 +1,43 @@
+---
+import { getLangFromUrl, languages, translatePath, useTranslations, type Lang } from '../i18n/ui';
+
+interface Props {
+	title?: string;
+}
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const { title = t('site.title') } = Astro.props;
+const sections = ['about', 'projects', 'experience', 'skills', 'contact'] as const;
+---
+
+<html lang={lang === 'pt' ? 'pt-BR' : 'en'}>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="description" content={t('site.description')} />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="icon" href="/favicon.ico" />
+		<link rel="alternate" hreflang="pt-BR" href={new URL(translatePath(Astro.url, 'pt'), Astro.site)} />
+		<link rel="alternate" hreflang="en" href={new URL(translatePath(Astro.url, 'en'), Astro.site)} />
+		<meta name="generator" content={Astro.generator} />
+		<title>{title}</title>
+	</head>
+	<body>
+		<header>
+			<nav>
+				{sections.map((s) => <a href={`#${s}`}>{t(`nav.${s}`)}</a>)}
+			</nav>
+			<div class="lang-switch">
+				{(Object.keys(languages) as Lang[]).map((l) => (
+					<a href={translatePath(Astro.url, l)} aria-current={l === lang ? 'true' : undefined}>
+						{languages[l]}
+					</a>
+				))}
+			</div>
+		</header>
+		<main>
+			<slot />
+		</main>
+	</body>
+</html>

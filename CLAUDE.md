@@ -18,7 +18,12 @@ A referência visual foi o site https://gabrielgreco.com: tipografia serifada gr
 ## Estado atual (2026-11-07)
 
 - Só o esqueleto existe: layout base, navegação por âncoras (`#about`, `#projects`, `#experience`, `#skills`, `#contact`), seletor PT/EN e páginas placeholder "Em construção" / "Under construction". Não há CSS nem conteúdo real ainda.
-- O repositório foi criado **privado**. O GitHub Pages em repositório privado só funciona com plano pago (GitHub Pro). Na conta gratuita, o workflow de deploy falha até o repositório virar público. Para publicar: `gh repo edit Batchuka/Batchuka.github.io --visibility public --accept-visibility-change-consequences` e depois conferir em Settings → Pages se a fonte está em "GitHub Actions".
+- O repositório foi criado **privado**, a pedido do usuário. A conta é gratuita, e o GitHub recusa o Pages em repositório privado (testado em 2026-11-07: `Your current plan does not support GitHub Pages for this repository`, HTTP 422). Por isso o job `deploy` do workflow falha a cada push até o repositório ficar público; o job `build` funciona e serve de verificação. Para publicar, quando o site estiver pronto:
+  ```sh
+  gh repo edit Batchuka/Batchuka.github.io --visibility public --accept-visibility-change-consequences
+  gh api -X POST repos/Batchuka/Batchuka.github.io/pages -f build_type=workflow
+  gh workflow run deploy.yml -R Batchuka/Batchuka.github.io
+  ```
 - O Node local da máquina (22.22.0) está abaixo do mínimo do Astro 7 (22.23.4), e `npm run dev` / `npm run build` recusam rodar. Correção definitiva: `winget upgrade OpenJS.NodeJS.LTS` (ou instalar o Node 24 LTS). Paliativo sem mexer no sistema: `npx -y node@24 node_modules/astro/bin/astro.mjs build` (ou `dev`).
 
 ## Próximos passos

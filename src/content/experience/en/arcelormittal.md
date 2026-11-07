@@ -1,0 +1,24 @@
+---
+order: 2
+org: ArcelorMittal Tubarão
+url: https://www.linkedin.com/company/arcelormittal-brasil/
+mark: AM
+role: Mechanical Maintenance Intern
+period: Jan — Jul 2019
+place: Serra, Brazil · integrated steel mill
+summary: A mechanical maintenance internship at a large integrated steel mill, after the technical course in maintenance at Ifes.
+tags: [equipment inspection, scheduled maintenance]
+photos:
+  - src: /photos/am-gerador-diesel.webp
+    alt: Selfie of Matheus in a hard hat and safety goggles in front of a large diesel generator.
+    caption: Inspecting a diesel generator.
+    position: center 35%
+  - src: /photos/am-coqueria.webp
+    alt: Selfie of Matheus in an ArcelorMittal hard hat, mirrored glasses and a respirator.
+    caption: Full protective gear to inspect the coke plant conveyors.
+    position: center 45%
+  - src: /photos/am-locomotiva.webp
+    alt: Two technicians in blue overalls in front of a yellow coke-transport locomotive, next to a tool cart.
+    caption: Bearing maintenance on a coke plant locomotive.
+    position: 60% center
+---

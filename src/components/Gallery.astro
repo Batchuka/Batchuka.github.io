@@ -1,0 +1,180 @@
+---
+/*
+ * Faixa de fotos (e vídeos curtos em loop, sem som) com legenda.
+ * Recebe a lista "photos" das coleções; arquivos ficam em public/photos/.
+ * O quadro tem proporção fixa (4:5), então as coordenadas do "marker" em % valem em qualquer
+ * largura de tela.
+ */
+interface Photo {
+	src: string;
+	alt: string;
+	caption?: string;
+	position?: string;
+	poster?: string;
+	marker?: { x: number; y: number; label: string };
+}
+
+interface Props {
+	photos: Photo[];
+}
+
+const { photos } = Astro.props;
+
+/*
+ * Seta reta a 45°, vinda de cima e da direita, terminando no ponto marcado.
+ * viewBox 100 x 125 (4:5), a mesma proporção do quadro, então 1 unidade vale o mesmo nos dois eixos.
+ */
+const LEN = 20;
+const start = (m: { x: number; y: number }) => ({ x: m.x + LEN, y: m.y * 1.25 - LEN });
+const arrow = (m: { x: number; y: number }) => {
+	const s = start(m);
+	return `M ${s.x} ${s.y} L ${m.x} ${m.y * 1.25}`;
+};
+const labelPos = (m: { x: number; y: number }) => {
+	const s = start(m);
+	return `left: ${s.x}%; top: ${s.y / 1.25}%`;
+};
+---
+
+{
+	photos.length > 0 && (
+		<div class="gallery" style={`--cols: ${Math.min(photos.length, 4)}`}>
+			{photos.map((p) => (
+				<figure>
+					<div class="frame">
+						{p.src.endsWith('.mp4') ? (
+							<video
+								src={p.src}
+								poster={p.poster}
+								autoplay
+								muted
+								loop
+								playsinline
+								preload="metadata"
+								aria-label={p.alt}
+								style={p.position && `object-position: ${p.position}`}
+							/>
+						) : (
+							<img
+								src={p.src}
+								alt={p.alt}
+								loading="lazy"
+								decoding="async"
+								style={p.position && `object-position: ${p.position}`}
+							/>
+						)}
+						{p.marker && (
+							<>
+								<svg class="arrow" viewBox="0 0 100 125" aria-hidden="true">
+									<defs>
+										<marker
+											id="arrowhead"
+											viewBox="0 0 10 10"
+											refX="5"
+											refY="5"
+											markerWidth="5"
+											markerHeight="5"
+											orient="auto-start-reverse"
+										>
+											<path d="M 0 0 L 10 5 L 0 10 z" />
+										</marker>
+									</defs>
+									<path class="halo" d={arrow(p.marker)} />
+									<path class="line" d={arrow(p.marker)} marker-end="url(#arrowhead)" />
+								</svg>
+								<span class="label" aria-hidden="true" style={labelPos(p.marker)}>
+									{p.marker.label}
+								</span>
+							</>
+						)}
+					</div>
+					{p.caption && <figcaption>{p.caption}</figcaption>}
+				</figure>
+			))}
+		</div>
+	)
+}
+
+<style>
+	.gallery {
+		display: grid;
+		grid-template-columns: repeat(var(--cols), 1fr);
+		gap: 1.25rem;
+		margin-top: 2.25rem;
+	}
+
+	figure {
+		margin: 0;
+	}
+
+	.frame {
+		position: relative;
+	}
+
+	img,
+	video {
+		display: block;
+		width: 100%;
+		aspect-ratio: 4 / 5;
+		object-fit: cover;
+		border: 1px solid var(--line);
+		background: var(--line-soft);
+		filter: saturate(0.85);
+	}
+
+	.arrow {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		pointer-events: none;
+		overflow: visible;
+	}
+
+	.arrow path {
+		fill: none;
+		stroke-linecap: round;
+	}
+
+	.arrow .halo {
+		stroke: rgb(255 255 255 / 0.85);
+		stroke-width: 3.2;
+	}
+
+	.arrow .line {
+		stroke: var(--ink);
+		stroke-width: 1.4;
+	}
+
+	.arrow marker path {
+		fill: var(--ink);
+		stroke: none;
+	}
+
+	/* Rótulo apoiado no começo da seta (posição vem do style inline). */
+	.label {
+		position: absolute;
+		transform: translate(-15%, -100%);
+		padding: 0.15rem 0.45rem;
+		background: var(--mark);
+		color: var(--ink);
+		font-family: var(--mono);
+		font-size: 0.8rem;
+		font-weight: 500;
+		box-shadow: 2px 2px 0 var(--ink);
+	}
+
+	figcaption {
+		margin-top: 0.6rem;
+		font-family: var(--mono);
+		font-size: 0.72rem;
+		line-height: 1.5;
+		color: var(--muted);
+	}
+
+	@media (max-width: 560px) {
+		.gallery {
+			grid-template-columns: 1fr 1fr;
+		}
+	}
+</style>

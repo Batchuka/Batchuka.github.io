@@ -1,0 +1,82 @@
+---
+/* 05 Contato: links de src/data/site.ts. Os que estiverem vazios não aparecem. */
+import { home } from '../data/home';
+import { site } from '../data/site';
+import { getLangFromUrl } from '../i18n/ui';
+import SectionHead from './SectionHead.astro';
+
+const lang = getLangFromUrl(Astro.url);
+const copy = home[lang].contact;
+const { email, github, lab, linkedin, lattes } = site.links;
+const bare = (url: string) => url.replace(/^https?:\/\/(www\.)?/, '');
+
+const links = [
+	{ label: copy.labels.email, href: email && `mailto:${email}`, text: email },
+	{ label: copy.labels.linkedin, href: linkedin, text: bare(linkedin) },
+	{ label: copy.labels.github, href: github, text: bare(github) },
+	{ label: copy.labels.lab, href: lab, text: bare(lab) },
+	{ label: copy.labels.lattes, href: lattes, text: bare(lattes) },
+].filter((l) => l.href);
+---
+
+<section class="section" id="contact">
+	<SectionHead eyebrow={copy.eyebrow} title={copy.title} lead={copy.lead} />
+
+	<ul class="links">
+		{
+			links.map((l) => (
+				<li>
+					<span class="label">{l.label}</span>
+					<a href={l.href}>{l.text} ↗</a>
+				</li>
+			))
+		}
+	</ul>
+</section>
+
+<style>
+	.section {
+		padding-bottom: clamp(5rem, 12vw, 10rem);
+	}
+
+	.links {
+		list-style: none;
+		padding: 0;
+		border-top: 1px solid var(--line);
+	}
+
+	li {
+		display: grid;
+		grid-template-columns: 16rem 1fr;
+		align-items: baseline;
+		gap: 0.5rem 1rem;
+		padding-block: 1.75rem;
+		border-bottom: 1px solid var(--line);
+	}
+
+	.label {
+		font-family: var(--mono);
+		font-size: 0.8rem;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--muted);
+	}
+
+	a {
+		font-family: var(--serif);
+		font-size: clamp(1.5rem, 3vw, 2.25rem);
+		color: var(--ink);
+		text-decoration: none;
+		overflow-wrap: anywhere;
+	}
+
+	a:hover {
+		color: var(--accent);
+	}
+
+	@media (max-width: 760px) {
+		li {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

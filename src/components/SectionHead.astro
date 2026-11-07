@@ -1,0 +1,37 @@
+---
+/* Cabeçalho comum das seções: rótulo numerado, título serifado grande e uma linha de apoio. */
+interface Props {
+	eyebrow: string;
+	title: string;
+	lead?: string;
+}
+
+const { eyebrow, title, lead } = Astro.props;
+---
+
+<header class="head">
+	<p class="eyebrow">{eyebrow}</p>
+	<h2>{title}</h2>
+	{lead && <p class="lead">{lead}</p>}
+</header>
+
+<style>
+	.head {
+		max-width: 62rem;
+		margin-bottom: clamp(3rem, 6vw, 5rem);
+	}
+
+	h2 {
+		margin-top: 1.5rem;
+		font-size: clamp(2.6rem, 6vw, 5.4rem);
+		line-height: 0.98;
+		letter-spacing: -0.035em;
+	}
+
+	.lead {
+		margin-top: 1.75rem;
+		max-width: 46rem;
+		font-size: 1.25rem;
+		color: var(--muted);
+	}
+</style>

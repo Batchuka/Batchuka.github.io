@@ -1,0 +1,142 @@
+/*
+ * Estilo global: tokens (cores, fontes, medidas), base tipográfica e o esqueleto da página
+ * (barra lateral fixa + coluna de conteúdo). O estilo de cada seção fica no próprio componente.
+ */
+
+:root {
+	--bg: #f6f5f0;
+	--bg-side: #eeede7;
+	--surface: #fbfaf7;
+	--ink: #1d1d1a;
+	--ink-soft: #3e3d38;
+	--muted: #75736b;
+	--line: #d9d7cf;
+	--line-soft: #e6e4dd;
+	--accent: #2e6650;
+	--accent-ink: #f1efe8;
+	--card: #17312a;
+	--mark: #efd982;
+
+	--serif: 'Newsreader', Georgia, 'Times New Roman', serif;
+	--sans: 'Source Sans 3', system-ui, -apple-system, 'Segoe UI', sans-serif;
+	--mono: 'JetBrains Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace;
+
+	--side-w: 340px;
+	--pad: clamp(1rem, 4.5vw, 4.5rem);
+	--content-max: 1180px;
+
+	color-scheme: light;
+}
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
+html {
+	scroll-behavior: smooth;
+	scroll-padding-top: 2rem;
+	-webkit-text-size-adjust: 100%;
+}
+
+body {
+	margin: 0;
+	background: var(--bg);
+	color: var(--ink-soft);
+	font-family: var(--sans);
+	font-size: 1.125rem;
+	line-height: 1.6;
+	-webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+h4 {
+	margin: 0;
+	color: var(--ink);
+	font-family: var(--serif);
+	font-weight: 400;
+	line-height: 1.05;
+	letter-spacing: -0.02em;
+}
+
+p,
+ul,
+ol {
+	margin: 0;
+}
+
+a {
+	color: inherit;
+}
+
+:focus-visible {
+	outline: 2px solid var(--accent);
+	outline-offset: 3px;
+}
+
+/* Rótulo em caixa alta e monoespaçado ("01 / EXPERIÊNCIA"). */
+.eyebrow {
+	font-family: var(--mono);
+	font-size: 0.8rem;
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+	color: var(--muted);
+}
+
+/* Link sublinhado com seta, usado nas chamadas de ação. */
+.text-link {
+	display: inline-block;
+	padding-bottom: 0.15rem;
+	border-bottom: 1px solid currentColor;
+	color: var(--ink);
+	text-decoration: none;
+	font-weight: 500;
+	transition: color 0.15s;
+}
+
+.text-link:hover {
+	color: var(--accent);
+}
+
+.text-link.soft {
+	color: var(--muted);
+	font-weight: 400;
+}
+
+.text-link.soft:hover {
+	color: var(--ink);
+}
+
+/* Esqueleto: barra lateral fixa à esquerda, conteúdo à direita. */
+.page {
+	min-height: 100vh;
+}
+
+.content {
+	margin-left: var(--side-w);
+	padding: 0 var(--pad);
+}
+
+.content > * {
+	max-width: var(--content-max);
+}
+
+.section {
+	padding-block: clamp(4rem, 10vw, 8rem);
+	border-top: 1px solid var(--line);
+}
+
+@media (max-width: 960px) {
+	.content {
+		margin-left: 0;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	html {
+		scroll-behavior: auto;
+	}
+}

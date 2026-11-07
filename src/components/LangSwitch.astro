@@ -1,0 +1,64 @@
+---
+/* Seletor PT / EN no canto superior direito; leva ao mesmo caminho no outro idioma. */
+import { getLangFromUrl, languages, translatePath, type Lang } from '../i18n/ui';
+
+const lang = getLangFromUrl(Astro.url);
+const langs = Object.keys(languages) as Lang[];
+---
+
+<nav class="lang" aria-label="Idioma / Language">
+	{
+		langs.map((l, i) => (
+			<>
+				{i > 0 && <span aria-hidden="true">/</span>}
+				<a
+					href={translatePath(Astro.url, l)}
+					hreflang={l === 'pt' ? 'pt-BR' : 'en'}
+					aria-current={l === lang ? 'true' : undefined}
+				>
+					{languages[l]}
+				</a>
+			</>
+		))
+	}
+</nav>
+
+<style>
+	.lang {
+		position: fixed;
+		top: 2.5rem;
+		right: 2.5rem;
+		z-index: 20;
+		display: flex;
+		gap: 0.6rem;
+		padding: 0.7rem 1rem;
+		border: 1px solid var(--line);
+		background: var(--bg);
+		font-family: var(--mono);
+		font-size: 0.75rem;
+		color: var(--muted);
+	}
+
+	a {
+		text-decoration: none;
+		color: var(--muted);
+	}
+
+	a:hover,
+	a[aria-current='true'] {
+		color: var(--ink);
+	}
+
+	a[aria-current='true'] {
+		text-decoration: underline;
+		text-underline-offset: 4px;
+	}
+
+	@media (max-width: 960px) {
+		.lang {
+			top: 1rem;
+			right: 1rem;
+			padding: 0.45rem 0.7rem;
+		}
+	}
+</style>

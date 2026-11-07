@@ -1,6 +1,6 @@
 /*
- * Textos curtos de interface (navegação, rótulos). Conteúdo longo de cada seção fica nos
- * próprios componentes/páginas ou em content collections, não aqui.
+ * Textos curtos de interface (navegação, rótulos). O texto das seções fica em src/data/home.ts,
+ * e conteúdo longo (experiência, projetos) em src/content/.
  */
 export const languages = {
 	pt: 'PT',
@@ -13,22 +13,30 @@ export const defaultLang: Lang = 'pt';
 
 export const ui = {
 	pt: {
-		'site.title': 'Batchuka — Portfólio',
-		'site.description': 'Portfólio pessoal: projetos, experiência e habilidades.',
-		'nav.about': 'Sobre',
-		'nav.projects': 'Projetos',
+		'site.title': 'Matheus Corteletti · Engenheiro de Software e de Controle e Automação',
+		'site.description':
+			'Portfólio de Matheus Corteletti Delfino: automação, backend orientado a eventos, ' +
+			'simulação e supervisão de processos.',
 		'nav.experience': 'Experiência',
-		'nav.skills': 'Habilidades',
+		'nav.projects': 'Projetos',
+		'nav.research': 'Formação',
+		'nav.toolbox': 'Ferramentas',
+		'nav.services': 'Serviços',
 		'nav.contact': 'Contato',
+		'link.open': 'abrir',
 	},
 	en: {
-		'site.title': 'Batchuka — Portfolio',
-		'site.description': 'Personal portfolio: projects, experience and skills.',
-		'nav.about': 'About',
-		'nav.projects': 'Projects',
+		'site.title': 'Matheus Corteletti · Software and Control & Automation Engineer',
+		'site.description':
+			'Portfolio of Matheus Corteletti Delfino: automation, event-driven backends, ' +
+			'process simulation and supervision.',
 		'nav.experience': 'Experience',
-		'nav.skills': 'Skills',
+		'nav.projects': 'Projects',
+		'nav.research': 'Education',
+		'nav.toolbox': 'Toolbox',
+		'nav.services': 'Services',
 		'nav.contact': 'Contact',
+		'link.open': 'open',
 	},
 } as const;
 

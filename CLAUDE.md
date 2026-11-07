@@ -17,21 +17,39 @@ A referência visual foi o site https://gabrielgreco.com: tipografia serifada gr
 
 ## Estado atual (2026-11-07)
 
-- Só o esqueleto existe: layout base, navegação por âncoras (`#about`, `#projects`, `#experience`, `#skills`, `#contact`), seletor PT/EN e páginas placeholder "Em construção" / "Under construction". Não há CSS nem conteúdo real ainda.
-- O repositório foi criado **privado**, a pedido do usuário. A conta é gratuita, e o GitHub recusa o Pages em repositório privado (testado em 2026-11-07: `Your current plan does not support GitHub Pages for this repository`, HTTP 422). Por isso o job `deploy` do workflow falha a cada push até o repositório ficar público; o job `build` funciona e serve de verificação. Para publicar, quando o site estiver pronto:
-  ```sh
-  gh repo edit Batchuka/Batchuka.github.io --visibility public --accept-visibility-change-consequences
-  gh api -X POST repos/Batchuka/Batchuka.github.io/pages -f build_type=workflow
-  gh workflow run deploy.yml -R Batchuka/Batchuka.github.io
-  ```
-- O Node local da máquina (22.22.0) está abaixo do mínimo do Astro 7 (22.23.4), e `npm run dev` / `npm run build` recusam rodar. Correção definitiva: `winget upgrade OpenJS.NodeJS.LTS` (ou instalar o Node 24 LTS). Paliativo sem mexer no sistema: `npx -y node@24 node_modules/astro/bin/astro.mjs build` (ou `dev`).
+- Página inicial com conteúdo real, pronta localmente e ainda sem commit; o que está publicado é o esqueleto "Em construção". Segue a estrutura do gabrielgreco (barra lateral numerada, herói serifado, faixa de números, cartões, chips), com textos e cores próprios. O usuário quer primeiro uma versão parecida e só depois mudar a estética. Ainda não há mascote, e a seção "Skills" do gabrielgreco ficou de fora porque exige backend.
+- Seções: 01 Experiência (WM Trading, ArcelorMittal), 02 Projetos (Simple Hubi, o laboratório e outros repositórios), 03 Pesquisa e formação (Ifes, duas ICs, técnico, eventos, cursos Alura, idiomas), 04 Ferramentas, 05 Serviços, 06 Contato.
+- Fontes do conteúdo: os PDFs que o usuário colou no chat em 2026-11-07 (trajetória na WM, dois CVs e duas cartas), os certificados em `J:\Meu Drive\formação\` e simplehubi.com. O Lattes (bloqueado por captcha) e o LinkedIn (exige login) não puderam ser lidos.
+- O título do herói ("Gosto de problema difícil. Os fáceis, eu automatizo.") é uma sugestão minha que ainda depende da escolha do usuário; está em `src/data/home.ts`.
+
+## Decisões de conteúdo do usuário
+
+- Posicionamento: ele é engenheiro de software **e** engenheiro de controle e automação, com o mesmo peso. O site fala dele, não de uma área.
+- Pode publicar: e-mail, LinkedIn, Lattes, nomes de clientes (BYD, Vibra) e tudo o que está nos CVs. Ficam de fora: telefone, nomes de empresas que só estiveram em negociação e qualquer crítica à WM; sobre o fim do projeto de varejo, dizer apenas que ele mudou de rumo e virou a Simple Hubi. Este arquivo também é público, então não registrar aqui o que não pode ir para o site.
+- Formação: não dizer que a graduação "vai ser concluída" nem dar detalhes sobre isso. Ele é engenheiro, e o resto é burocracia.
+- PyTRobot é o `Batchuka/rpa-stateMachine-framework`, e a CLI é o `Batchuka/rpa-stateMachine-cli`.
+
+## Onde fica cada coisa
+
+- `src/data/site.ts`: nome, cargo, local e links (link vazio não aparece).
+- `src/data/home.ts`: todo o texto da página inicial, em PT e EN, agrupado por seção.
+- `src/data/toolbox.ts`: grupos e ferramentas da seção de ferramentas.
+- `src/data/events.ts`: eventos, cursos livres e idiomas da seção de formação.
+- `src/content/<experience|projects|education>/<pt|en>/<nome>.md`: um arquivo por item e por idioma; o schema está em `src/content.config.ts`. `order` define a posição e `draft: true` esconde o item. Projetos têm `group` (`product`, `lab` ou `other`; `other` aparece em grade compacta). Há um modelo de experiência em `src/content/experience/*/modelo.md`.
+- `src/components/`: um componente por seção (`Hero`, `Experience`, `Projects`, `Research`, `Toolbox`, `Services`, `Contact`), mais `Sidebar`, `LangSwitch`, `SectionHead` e `Home`, que junta as seções. As páginas `src/pages/index.astro` e `src/pages/en/index.astro` só envolvem `Home` no `Base`.
+- Fotos e vídeos: `public/photos/<empresa>-<assunto>.webp|.mp4`, listados no campo `photos` das entradas de experiência e de formação e renderizados por `src/components/Gallery.astro`. Os originais ficam em `J:\Meu Drive\vagas\fotos\`. Antes de qualquer foto entrar no repositório (que é público), ela precisa ser girada pelo EXIF, reduzida (no máximo 1400 px) e regravada **sem metadados**: duas fotos da ArcelorMittal tinham GPS. O `sharp` não está instalado, então o Astro não otimiza imagens; o tratamento é feito antes, com Pillow, e os vídeos com ffmpeg (`-an -map_metadata -1`).
+- `src/styles/global.css`: tokens de cor, fonte e medida em `:root`, mais a base tipográfica e o esqueleto da página. O CSS de cada seção fica no próprio componente.
+- Fontes: Newsreader (títulos), Source Sans 3 (texto) e JetBrains Mono (rótulos), carregadas do Google Fonts em `Base.astro`.
+- Armadilha do CSS com escopo do Astro: ele adiciona um atributo a cada seletor, o que muda a especificidade. Uma regra `li + li` vence `li:nth-child(3)`; para sobrescrever, repita a forma (`li + li:nth-child(3)`).
+- Armadilha do servidor de desenvolvimento: se o schema de uma coleção muda antes de os arquivos se adequarem, ele guarda a coleção como vazia (no log: `The collection "projects" does not exist or is empty`) e não se recupera sozinho. Resolve com `astro dev stop` e `astro dev --background`.
+- O repositório é **público** e o site está no ar desde 2026-11-07 (Pages com `build_type=workflow`). Cada push na `main` publica; não subir nada que não deva ficar visível. Contexto: a conta é gratuita e o GitHub recusa o Pages em repositório privado (HTTP 422), por isso o repositório não pode voltar a ser privado sem derrubar o site.
+- Node local: 22.23.4, o mínimo do Astro 7, instalado pelo winget como `OpenJS.NodeJS.22` (atualizar com `winget upgrade OpenJS.NodeJS.22`). `npm run dev` e `npm run build` rodam normalmente.
 
 ## Próximos passos
 
-1. Definir a identidade visual (paleta, fontes, layout da barra lateral) e escrever o CSS global no `Base.astro` ou em `src/styles/`.
-2. Escrever o conteúdo de cada seção nos dois idiomas. Conteúdo longo (projetos, experiências) deve virar content collection (`src/content/`), com um arquivo por item e por idioma, em vez de ficar escrito direto nas páginas.
-3. Seção de projetos: o material principal é o laboratório Tennessee Eastman (pasta local `C:\Projetos\tep\`): planta simulada em Rust (`tep-plant`), framework `monjolo`, OPC-UA, IHM com SQLite + ECharts (`tep-ihm`), supervisor genérico no Kubernetes com função de custo declarada como CRD (`plant-supervisor`), historiador (`tep-historian`) e o registro de experimentos. Antes de linkar um desses repositórios, confirmar se ele é público.
-4. Tornar o repositório público e confirmar o primeiro deploy.
+1. O usuário escolhe o título do herói e revisa os textos no localhost.
+2. Depois, mudar a estética para uma identidade própria (paleta, fontes, talvez um mascote), partindo dos tokens em `src/styles/global.css`.
+3. Projetos: o laboratório Tennessee Eastman (pasta local `C:\Projetos\tep\`) está todo público na organização `Green-Cinnamon-Labs` (conferido em 2026-11-07). Antes de linkar qualquer outro repositório, confirmar se ele é público.
 
 ## Convenções
 

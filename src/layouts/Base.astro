@@ -1,5 +1,8 @@
 ---
-import { getLangFromUrl, languages, translatePath, useTranslations, type Lang } from '../i18n/ui';
+import '../styles/global.css';
+import LangSwitch from '../components/LangSwitch.astro';
+import Sidebar from '../components/Sidebar.astro';
+import { getLangFromUrl, translatePath, useTranslations } from '../i18n/ui';
 
 interface Props {
 	title?: string;
@@ -8,7 +11,10 @@ interface Props {
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 const { title = t('site.title') } = Astro.props;
-const sections = ['about', 'projects', 'experience', 'skills', 'contact'] as const;
+const fonts =
+	'https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500' +
+	'&family=Newsreader:opsz,wght@6..72,400;6..72,500' +
+	'&family=Source+Sans+3:wght@400;500;600&display=swap';
 ---
 
 <html lang={lang === 'pt' ? 'pt-BR' : 'en'}>
@@ -20,24 +26,19 @@ const sections = ['about', 'projects', 'experience', 'skills', 'contact'] as con
 		<link rel="icon" href="/favicon.ico" />
 		<link rel="alternate" hreflang="pt-BR" href={new URL(translatePath(Astro.url, 'pt'), Astro.site)} />
 		<link rel="alternate" hreflang="en" href={new URL(translatePath(Astro.url, 'en'), Astro.site)} />
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link rel="stylesheet" href={fonts} />
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
 	</head>
 	<body>
-		<header>
-			<nav>
-				{sections.map((s) => <a href={`#${s}`}>{t(`nav.${s}`)}</a>)}
-			</nav>
-			<div class="lang-switch">
-				{(Object.keys(languages) as Lang[]).map((l) => (
-					<a href={translatePath(Astro.url, l)} aria-current={l === lang ? 'true' : undefined}>
-						{languages[l]}
-					</a>
-				))}
-			</div>
-		</header>
-		<main>
-			<slot />
-		</main>
+		<div class="page">
+			<Sidebar />
+			<LangSwitch />
+			<main class="content">
+				<slot />
+			</main>
+		</div>
 	</body>
 </html>

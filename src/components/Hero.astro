@@ -1,0 +1,288 @@
+---
+/* Abertura da página: título grande, marca-texto, parágrafo, cartão do laboratório e números. */
+import { home } from '../data/home';
+import { site } from '../data/site';
+import { getLangFromUrl } from '../i18n/ui';
+
+const lang = getLangFromUrl(Astro.url);
+const { hero, stats } = home[lang];
+---
+
+<section class="hero" id="top">
+	<p class="eyebrow">{site.name} / {site.role[lang]}</p>
+	<h1>{hero.title}</h1>
+	<p class="mark"><span>{hero.mark}</span></p>
+	<p class="lead">{hero.lead}</p>
+
+	<a class="card" href={hero.card.href}>
+		<span class="card-icon" aria-hidden="true">
+			<svg viewBox="0 0 64 64">
+				<path d="M14 50V22l10-8 10 8v28M34 50V30h16v20M8 50h48" />
+				<path d="M20 30h8M20 38h8M40 38h4" />
+				<circle cx="24" cy="10" r="3" />
+			</svg>
+		</span>
+		<span class="card-body">
+			<span class="card-kicker">{hero.card.kicker}</span>
+			<span class="card-title">{hero.card.title}</span>
+			<span class="card-text">{hero.card.text}</span>
+		</span>
+		<span class="card-arrow" aria-hidden="true">↗</span>
+	</a>
+	<p class="caption">{hero.caption}</p>
+
+	<p class="actions">
+		<a class="text-link" href={hero.primary.href}>{hero.primary.text}</a>
+		<a class="text-link soft" href={hero.secondary.href}>{hero.secondary.text}</a>
+	</p>
+
+	<div class="stats">
+		<ul>
+			{
+				stats.items.map((s) => (
+					<li>
+						<span class="value">{s.value}</span>
+						<span class="text">{s.text}</span>
+						<a href={s.href}>{s.link} ↗</a>
+					</li>
+				))
+			}
+		</ul>
+		<p class="note">↳ {stats.note}</p>
+	</div>
+</section>
+
+<style>
+	.hero {
+		padding-block: clamp(5rem, 11vw, 9.5rem) clamp(3rem, 6vw, 5rem);
+	}
+
+	h1 {
+		margin-top: 2.5rem;
+		max-width: 15ch;
+		font-size: clamp(3.2rem, 8.5vw, 7.6rem);
+		line-height: 0.92;
+		letter-spacing: -0.045em;
+	}
+
+	.mark {
+		margin-top: 2.5rem;
+		font-family: var(--mono);
+		font-size: 1.05rem;
+		color: var(--ink);
+	}
+
+	.mark span {
+		padding: 0.35rem 0.5rem;
+		background: var(--mark);
+		box-decoration-break: clone;
+		-webkit-box-decoration-break: clone;
+	}
+
+	.lead {
+		margin-top: 2.5rem;
+		max-width: 50rem;
+		font-size: clamp(1.25rem, 2.2vw, 1.6rem);
+		line-height: 1.6;
+		color: var(--ink-soft);
+	}
+
+	.card {
+		display: flex;
+		align-items: center;
+		gap: 1.75rem;
+		max-width: 48rem;
+		margin-top: 3.5rem;
+		padding: 1.75rem 2rem;
+		border-radius: 1.25rem;
+		background: radial-gradient(circle at 75% 0%, #24473c, var(--card) 60%);
+		color: var(--accent-ink);
+		text-decoration: none;
+		box-shadow: 0 24px 50px -24px rgb(23 49 42 / 0.55);
+		transition: transform 0.2s, box-shadow 0.2s;
+	}
+
+	.card:hover {
+		transform: translateY(-2px);
+		box-shadow: 0 30px 60px -24px rgb(23 49 42 / 0.65);
+	}
+
+	.card-icon {
+		flex: none;
+		padding-right: 1.75rem;
+		border-right: 1px solid rgb(255 255 255 / 0.12);
+	}
+
+	.card-icon svg {
+		width: 4.5rem;
+		height: 4.5rem;
+		fill: none;
+		stroke: var(--mark);
+		stroke-width: 2;
+		stroke-linecap: round;
+		stroke-linejoin: round;
+	}
+
+	.card-body {
+		display: flex;
+		flex-direction: column;
+		gap: 0.4rem;
+		flex: 1;
+	}
+
+	.card-kicker {
+		font-family: var(--mono);
+		font-size: 0.7rem;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: rgb(241 239 232 / 0.7);
+	}
+
+	.card-title {
+		font-family: var(--serif);
+		font-size: clamp(1.6rem, 3.4vw, 2.5rem);
+		line-height: 1.05;
+		letter-spacing: -0.02em;
+	}
+
+	.card-text {
+		font-size: 1rem;
+		color: rgb(241 239 232 / 0.75);
+	}
+
+	.card-arrow {
+		display: grid;
+		place-items: center;
+		flex: none;
+		width: 3.5rem;
+		height: 3.5rem;
+		border: 1px solid rgb(255 255 255 / 0.2);
+		border-radius: 50%;
+		font-size: 1.4rem;
+	}
+
+	.caption {
+		margin-top: 1.25rem;
+		font-size: 1rem;
+		color: var(--muted);
+	}
+
+	.actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 2.25rem;
+		margin-top: 3rem;
+	}
+
+	.stats {
+		margin-top: clamp(4rem, 8vw, 6.5rem);
+	}
+
+	.stats ul {
+		list-style: none;
+		padding: 0;
+		display: grid;
+		grid-template-columns: repeat(4, 1fr);
+		border-top: 1px solid var(--line);
+		border-bottom: 1px solid var(--line);
+	}
+
+	.stats li {
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
+		padding: 2rem 1.75rem 2rem 0;
+	}
+
+	.stats li + li {
+		padding-left: 1.75rem;
+		border-left: 1px solid var(--line);
+	}
+
+	.value {
+		font-family: var(--serif);
+		font-size: clamp(2.6rem, 4.5vw, 4rem);
+		line-height: 1;
+		color: var(--ink);
+		font-variant-numeric: oldstyle-nums;
+	}
+
+	.text {
+		flex: 1;
+		font-size: 1rem;
+		line-height: 1.45;
+		color: var(--muted);
+	}
+
+	.stats a {
+		font-size: 0.95rem;
+		color: var(--ink-soft);
+		text-underline-offset: 3px;
+	}
+
+	.stats a:hover {
+		color: var(--accent);
+	}
+
+	.note {
+		margin-top: 1.25rem;
+		font-size: 0.95rem;
+		color: var(--muted);
+	}
+
+	@media (max-width: 960px) {
+		.stats ul {
+			grid-template-columns: repeat(2, 1fr);
+		}
+
+		/* "li + li" precisa estar aqui para vencer a regra geral, que tem a mesma forma. */
+		.stats li + li:nth-child(3) {
+			padding-left: 0;
+			border-left: 0;
+		}
+
+		.stats li:nth-child(n + 3) {
+			border-top: 1px solid var(--line);
+		}
+	}
+
+	@media (max-width: 560px) {
+		.hero {
+			padding-top: 3rem;
+		}
+
+		.card {
+			flex-wrap: wrap;
+			gap: 1.25rem;
+			padding: 1.5rem;
+		}
+
+		.card-icon {
+			padding-right: 0;
+			border-right: 0;
+		}
+
+		.card-icon svg {
+			width: 3rem;
+			height: 3rem;
+		}
+
+		.card-arrow {
+			display: none;
+		}
+
+		.stats ul {
+			grid-template-columns: 1fr;
+		}
+
+		.stats li,
+		.stats li + li {
+			padding: 1.5rem 0;
+			border-left: 0;
+		}
+
+		.stats li + li {
+			border-top: 1px solid var(--line);
+		}
+	}
+</style>

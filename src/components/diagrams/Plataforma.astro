@@ -1,0 +1,278 @@
+---
+/*
+ * Barramento de eventos e orquestrador, no estilo dos diagramas da AWS e no modelo de uma rede
+ * industrial: dois barramentos (RX e TX) no EventBridge, um único mestre (o orquestrador) à
+ * esquerda e as aplicações de domínio penduradas nos barramentos, como dispositivos de campo.
+ * SVG desenhado à mão (viewBox 1160 x 460); textos nos dois idiomas.
+ */
+import { getLangFromUrl } from '../../i18n/ui';
+import { icons } from './aws';
+
+const lang = getLangFromUrl(Astro.url);
+const text = {
+	pt: {
+		user: ['negócio', 'tela web'],
+		routes: 'roteiros',
+		sqs: 'fila RX',
+		orq: 'Orquestrador',
+		orqRole: 'Elastic Beanstalk',
+		rx: 'EventBridge · barramento RX',
+		tx: 'EventBridge · barramento TX',
+		others: 'Outros',
+		lambda: 'ETL e requisição',
+		publish: 'publica',
+		request: 'requisição',
+		trigger: 'dispara',
+		note: 'Diagrama ultra simplificado.',
+		label:
+			'Barramento de eventos. O negócio declara roteiros no orquestrador, no Elastic Beanstalk. As aplicações de domínio publicam eventos no barramento RX do EventBridge, por meio da biblioteca eventbus; o barramento entrega numa fila SQS que o orquestrador consome. O orquestrador publica no barramento TX, que dispara Lambdas de ETL que fazem as requisições às aplicações.',
+	},
+	en: {
+		user: ['business', 'web screen'],
+		routes: 'routes',
+		sqs: 'RX queue',
+		orq: 'Orchestrator',
+		orqRole: 'Elastic Beanstalk',
+		rx: 'EventBridge · RX bus',
+		tx: 'EventBridge · TX bus',
+		others: 'Others',
+		lambda: 'ETL and request',
+		publish: 'publishes',
+		request: 'request',
+		trigger: 'triggers',
+		note: 'Ultra-simplified diagram.',
+		label:
+			'Event bus. The business declares routes in the orchestrator, on Elastic Beanstalk. Domain applications publish events on the EventBridge RX bus through the eventbus library; the bus delivers them to an SQS queue the orchestrator consumes. The orchestrator publishes on the TX bus, which triggers ETL Lambdas that send the requests to the applications.',
+	},
+}[lang];
+
+/* side: onde ficam nome e papel (abaixo, à esquerda ou à direita do ícone). */
+type Side = 'below' | 'left' | 'right';
+const apps = [560, 760, 960];
+const appNames = ['DU', 'CLF', text.others];
+const nodes: { x: number; y: number; icon: string; name: string; role: string; cat: string; side: Side }[] = [
+	{ x: 370, y: 96, icon: 'queue', name: 'SQS', role: text.sqs, cat: 'int', side: 'left' },
+	{ x: 370, y: 250, icon: 'hub', name: text.orq, role: text.orqRole, cat: 'cmp', side: 'below' },
+	...apps.map((x, i) => ({
+		x,
+		y: 180,
+		icon: ['doc', 'tag', 'box'][i],
+		name: appNames[i],
+		role: 'eventbus',
+		cat: 'svc',
+		side: 'right' as Side,
+	})),
+	...apps.map((x) => ({
+		x,
+		y: 310,
+		icon: 'lambda',
+		name: 'Lambda',
+		role: text.lambda,
+		cat: 'cmp',
+		side: 'right' as Side,
+	})),
+];
+
+type Node = (typeof nodes)[number];
+const label = (n: Node) =>
+	n.side === 'below'
+		? { x: n.x, name: n.y + 50, role: n.y + 68, anchor: 'middle' }
+		: n.side === 'left'
+			? { x: n.x - 44, name: n.y - 4, role: n.y + 14, anchor: 'end' }
+			: { x: n.x + 40, name: n.y - 4, role: n.y + 14, anchor: 'start' };
+---
+
+<figure class="arch">
+	<svg viewBox="0 0 1160 460" role="img" aria-label={text.label}>
+		<defs>
+			<marker
+				id="bus-arrow"
+				viewBox="0 0 10 10"
+				refX="9"
+				refY="5"
+				markerWidth="7"
+				markerHeight="7"
+				orient="auto-start-reverse"
+			>
+				<path d="M 0 0 L 10 5 L 0 10 z" />
+			</marker>
+		</defs>
+
+		<rect class="cloud" x="130" y="16" width="1000" height="430" />
+		<rect class="cloud-tag" x="130" y="16" width="96" height="24" />
+		<text class="cloud-tag-text" x="178" y="33">AWS Cloud</text>
+
+		<g class="user">
+			<circle cx="60" cy="232" r="11" />
+			<path d="M 38 272 C 38 252, 82 252, 82 272 Z" />
+			<text class="name" x="60" y="196">{text.user[0]}</text>
+			<text class="role" x="60" y="212">{text.user[1]}</text>
+		</g>
+
+		{/* Barramentos: linhas grossas, como numa rede de campo. */}
+		<g class="bus">
+			<line x1="460" y1="96" x2="1090" y2="96" />
+			<line x1="460" y1="400" x2="1090" y2="400" />
+			<text x="1090" y="82">{text.rx}</text>
+			<text x="1090" y="426">{text.tx}</text>
+		</g>
+
+		<g class="edges">
+			<path d="M 90 250 H 340" marker-end="url(#bus-arrow)" />
+			<path d="M 460 96 H 400" marker-end="url(#bus-arrow)" />
+			<path d="M 370 124 V 220" marker-end="url(#bus-arrow)" />
+			<path d="M 398 250 H 445 V 400 H 458" marker-end="url(#bus-arrow)" />
+			{
+				apps.map((x) => (
+					<>
+						<path d={`M ${x} 152 V 99`} marker-end="url(#bus-arrow)" />
+						<path d={`M ${x} 397 V 340`} marker-end="url(#bus-arrow)" />
+						<path d={`M ${x} 282 V 210`} marker-end="url(#bus-arrow)" />
+					</>
+				))
+			}
+		</g>
+
+		<g class="edge-labels">
+			<text x="215" y="240">{text.routes}</text>
+			<text x="568" y="128">{text.publish}</text>
+			<text x="568" y="250">{text.request}</text>
+			<text x="568" y="372">{text.trigger}</text>
+		</g>
+
+		{
+			nodes.map((n) => {
+				const l = label(n);
+				return (
+					<g class={`node ${n.cat}`}>
+						<rect x={n.x - 28} y={n.y - 28} width="56" height="56" rx="4" />
+						<g class="icon" transform={`translate(${n.x} ${n.y})`}>
+							{icons[n.icon].s && <path class="s" d={icons[n.icon].s} />}
+							{icons[n.icon].f && <path class="f" d={icons[n.icon].f} />}
+						</g>
+						<text class="name" x={l.x} y={l.name} style={`text-anchor: ${l.anchor}`}>
+							{n.name}
+						</text>
+						<text class="role" x={l.x} y={l.role} style={`text-anchor: ${l.anchor}`}>
+							{n.role}
+						</text>
+					</g>
+				);
+			})
+		}
+	</svg>
+	<figcaption>{text.note}</figcaption>
+</figure>
+
+<style>
+	.arch {
+		margin: 2rem 0 0;
+	}
+
+	svg {
+		display: block;
+		width: 100%;
+		height: auto;
+	}
+
+	text {
+		font-family: var(--mono);
+		text-anchor: middle;
+	}
+
+	.cloud {
+		fill: none;
+		stroke: var(--ink);
+		stroke-width: 1.2;
+	}
+
+	.cloud-tag {
+		fill: var(--ink);
+	}
+
+	.cloud-tag-text {
+		font-size: 12px;
+		fill: var(--bg);
+	}
+
+	.user circle,
+	.user path {
+		fill: none;
+		stroke: var(--ink);
+		stroke-width: 1.8;
+	}
+
+	.bus line {
+		stroke: #e7157b;
+		stroke-width: 4;
+		stroke-linecap: round;
+	}
+
+	.bus text {
+		font-size: 13px;
+		text-anchor: end;
+		fill: #c20f68;
+	}
+
+	.edges path {
+		fill: none;
+		stroke: var(--muted);
+		stroke-width: 1.5;
+	}
+
+	marker path {
+		fill: var(--muted);
+	}
+
+	.edge-labels text {
+		font-size: 12px;
+		fill: var(--muted);
+	}
+
+	.edge-labels text + text {
+		text-anchor: start;
+	}
+
+	.icon .s {
+		fill: none;
+		stroke: #fff;
+		stroke-width: 2;
+		stroke-linecap: round;
+		stroke-linejoin: round;
+	}
+
+	.icon .f {
+		fill: #fff;
+	}
+
+	.name {
+		font-size: 14px;
+		fill: var(--ink);
+	}
+
+	.role {
+		font-size: 13px;
+		fill: var(--muted);
+	}
+
+	/* Cores das categorias da AWS; aplicações próprias ficam na cor do site. */
+	.int rect {
+		fill: #e7157b;
+	}
+
+	.cmp rect {
+		fill: #ed7100;
+	}
+
+	.svc rect {
+		fill: var(--card);
+	}
+
+	figcaption {
+		margin-top: 0.6rem;
+		font-family: var(--mono);
+		font-size: 0.72rem;
+		line-height: 1.5;
+		color: var(--muted);
+	}
+</style>

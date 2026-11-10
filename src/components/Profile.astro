@@ -1,0 +1,841 @@
+---
+/*
+ * Aba lateral com o perfil de personalidade: três testes (PI, 16Personalities, Big Five), um
+ * por subaba. Fica presa à borda direita; aberta, não bloqueia a página, para o leitor rolar a
+ * experiência e comparar. Gráficos desenhados à mão a partir de src/data/profile.ts.
+ */
+import { profile } from '../data/profile';
+import { getLangFromUrl } from '../i18n/ui';
+
+const lang = getLangFromUrl(Astro.url);
+const p = profile[lang];
+const tests = [
+	{ id: 'pi', short: p.pi.short },
+	{ id: 'p16', short: p.p16.short },
+	{ id: 'b5', short: p.b5.short },
+];
+
+/* PI: trilha de -3σ a +3σ, 40 unidades por desvio, centro em x = 220. */
+const cx = (score: number) => 220 + score * 40;
+const rowY = (i: number) => 36 + i * 38;
+const sigmas = [-3, -2, -1, 0, 1, 2, 3];
+const line = p.pi.factors.map((f, i) => `${i ? 'L' : 'M'} ${cx(f.score)} ${rowY(i)}`).join(' ');
+
+/* 16Personalities: posição do marcador, em %, a partir do polo da esquerda. */
+const pos = (s: { value: number; side: string }) => (s.side === 'left' ? 100 - s.value : s.value);
+---
+
+<div class="profile" data-profile>
+	<button
+		class="tab"
+		type="button"
+		aria-expanded="false"
+		aria-controls="profile-panel"
+		aria-label={p.open}
+		data-profile-toggle
+	>
+		<svg class="tab-mark" viewBox="0 0 16 24" aria-hidden="true">
+			<path d="M 7 3 L 5 9 L 8 15 L 12 21" />
+			<circle cx="7" cy="3" r="2" />
+			<circle cx="5" cy="9" r="2" />
+			<circle cx="8" cy="15" r="2" />
+			<circle cx="12" cy="21" r="2" />
+		</svg>
+		<span>{p.tab}</span>
+	</button>
+
+	<aside class="panel" id="profile-panel" aria-label={p.title} inert>
+		<header class="panel-head">
+			<span></span>
+			<button class="close" type="button" data-profile-toggle>
+				{p.close} ✕
+			</button>
+		</header>
+
+		<h2>{p.title}</h2>
+		{'intro' in p && <p class="intro">{p.intro}</p>}
+
+		<div class="tests" role="tablist" aria-label={p.tabsLabel}>
+			{
+				tests.map((t, i) => (
+					<button
+						type="button"
+						role="tab"
+						id={`test-tab-${t.id}`}
+						aria-controls={`test-${t.id}`}
+						aria-selected={i === 0 ? 'true' : 'false'}
+						tabindex={i === 0 ? 0 : -1}
+					>
+						{t.short}
+					</button>
+				))
+			}
+		</div>
+
+		{/* Predictive Index */}
+		<section class="test" id="test-pi" role="tabpanel" aria-labelledby="test-tab-pi">
+			<p class="test-head">
+				<strong>{p.pi.name}</strong>
+				<a class="text-link soft" href={p.pi.href}>{p.site}</a>
+			</p>
+			<p class="about">{p.pi.about}</p>
+
+			<p class="result">
+				<span class="result-label">{p.pi.result.label}</span>
+				<strong>{p.pi.result.name}</strong>
+				<span class="result-text">{p.pi.result.text}</span>
+			</p>
+
+			<svg class="chart" viewBox="0 0 440 196" role="img" aria-label={p.pi.chartLabel}>
+				{
+					sigmas.map((s) => (
+						<line class:list={['grid', { mid: s === 0 }]} x1={cx(s)} x2={cx(s)} y1="16" y2="168" />
+					))
+				}
+				{
+					p.pi.factors.map((f, i) => (
+						<g>
+							<line class="track" x1={cx(-3)} x2={cx(3)} y1={rowY(i)} y2={rowY(i)} />
+							<text
+								class:list={['pole', { on: f.pole === 'left' }]}
+								x="92"
+								y={rowY(i) + 4}
+								text-anchor="end"
+							>
+								{f.poles[0]}
+							</text>
+							<text class:list={['pole', { on: f.pole === 'right' }]} x="348" y={rowY(i) + 4}>
+								{f.poles[1]}
+							</text>
+						</g>
+					))
+				}
+				<path class="link" d={line} />
+				{
+					p.pi.factors.map((f, i) => (
+						<g class="dot">
+							<circle cx={cx(f.score)} cy={rowY(i)} r="9" />
+							<text x={cx(f.score)} y={rowY(i) + 3.5} text-anchor="middle">
+								{f.key}
+							</text>
+						</g>
+					))
+				}
+				<text class="axis" x={cx(-3)} y="186" text-anchor="middle">−3σ</text>
+				<text class="axis" x={cx(0)} y="186" text-anchor="middle">0</text>
+				<text class="axis" x={cx(3)} y="186" text-anchor="middle">+3σ</text>
+			</svg>
+
+			<ol class="items">
+				{
+					p.pi.factors.map((f) => (
+						<li>
+							<p class="i-head">
+								<span class="i-key">{f.key}</span>
+								<strong>{f.name}</strong>
+								<span class="i-level">{f.level}</span>
+							</p>
+							<p class="i-text">{f.text}</p>
+							<p class="i-care">
+								<span>{p.careLabel}:</span> {f.care}
+							</p>
+						</li>
+					))
+				}
+			</ol>
+
+			<div class="list">
+				<p class="eyebrow">{p.pi.works.title}</p>
+				<ul>
+					{p.pi.works.items.map((w) => <li>{w}</li>)}
+				</ul>
+			</div>
+		</section>
+
+		{/* 16Personalities */}
+		<section class="test" id="test-p16" role="tabpanel" aria-labelledby="test-tab-p16" hidden>
+			<p class="test-head">
+				<strong>{p.p16.name}</strong>
+				<a class="text-link soft" href={p.p16.href}>{p.site}</a>
+			</p>
+			<p class="about">{p.p16.about}</p>
+
+			<p class="result">
+				<span class="result-label">{p.p16.result.label}</span>
+				<strong>{p.p16.result.name}</strong>
+				<span class="result-text">{p.p16.result.text}</span>
+			</p>
+
+			<ul class="scales">
+				{
+					p.p16.scales.map((s) => (
+						<li>
+							<p class="s-head">
+								<span class="s-group">{s.group}</span>
+								<strong>
+									{s.value}% {s.side === 'left' ? s.poles[0] : s.poles[1]}
+								</strong>
+							</p>
+							<div class="s-bar">
+								<span class="s-dot" style={`left: ${pos(s)}%`} />
+							</div>
+							<p class="s-poles">
+								<span class:list={{ on: s.side === 'left' }}>{s.poles[0]}</span>
+								<span class:list={{ on: s.side === 'right' }}>{s.poles[1]}</span>
+							</p>
+						</li>
+					))
+				}
+			</ul>
+
+			<div class="list">
+				<p class="eyebrow">{p.strengthsLabel}</p>
+				<ul>
+					{p.p16.strengths.map((w) => <li>{w}</li>)}
+				</ul>
+			</div>
+			<div class="list care">
+				<p class="eyebrow">{p.careLabel}</p>
+				<ul>
+					{p.p16.cares.map((w) => <li>{w}</li>)}
+				</ul>
+			</div>
+		</section>
+
+		{/* Big Five Aspects */}
+		<section class="test" id="test-b5" role="tabpanel" aria-labelledby="test-tab-b5" hidden>
+			<p class="test-head">
+				<strong>{p.b5.name}</strong>
+				<a class="text-link soft" href={p.b5.href}>{p.site}</a>
+			</p>
+			<p class="about">{p.b5.about}</p>
+
+			<ul class="traits" aria-label={p.b5.chartLabel}>
+				{
+					p.b5.traits.map((t) => (
+						<li>
+							<p class="t-head">
+								<strong>{t.name}</strong>
+								<span class="t-value">{t.value}</span>
+							</p>
+							<div class="t-bar">
+								<span style={`width: ${t.value}%`} />
+							</div>
+							<div class="aspects">
+								{t.aspects.map(([name, value]) => (
+									<div class="aspect">
+										<p>
+											<span>{name}</span>
+											<span>{value}</span>
+										</p>
+										<div class="a-bar">
+											<span style={`width: ${value}%`} />
+										</div>
+									</div>
+								))}
+							</div>
+							<p class="i-text">{t.text}</p>
+						</li>
+					))
+				}
+			</ul>
+		</section>
+
+		{'note' in p && <p class="note">{p.note}</p>}
+	</aside>
+</div>
+
+<script>
+	/* Abre e fecha a aba; Esc fecha. Fechada, o painel fica inerte (fora do foco e do leitor). */
+	const root = document.querySelector<HTMLElement>('[data-profile]');
+	const panel = root?.querySelector<HTMLElement>('.panel');
+	const tab = root?.querySelector<HTMLButtonElement>('.tab');
+
+	function setOpen(open: boolean) {
+		if (!root || !panel || !tab) return;
+		root.classList.toggle('open', open);
+		tab.setAttribute('aria-expanded', String(open));
+		panel.inert = !open;
+		if (open) panel.focus({ preventScroll: true });
+	}
+
+	root?.querySelectorAll('[data-profile-toggle]').forEach((b) =>
+		b.addEventListener('click', () => setOpen(!root.classList.contains('open'))),
+	);
+	document.addEventListener('keydown', (e) => {
+		if (e.key === 'Escape' && root?.classList.contains('open')) {
+			setOpen(false);
+			tab?.focus();
+		}
+	});
+	panel?.setAttribute('tabindex', '-1');
+
+	/* Subabas dos testes: clique ou setas trocam o teste visível. */
+	const tabs = [...(root?.querySelectorAll<HTMLButtonElement>('[role="tab"]') ?? [])];
+	function select(t: HTMLButtonElement) {
+		for (const other of tabs) {
+			const on = other === t;
+			other.setAttribute('aria-selected', String(on));
+			other.tabIndex = on ? 0 : -1;
+			document.getElementById(other.getAttribute('aria-controls')!)!.hidden = !on;
+		}
+	}
+	tabs.forEach((t, i) => {
+		t.addEventListener('click', () => select(t));
+		t.addEventListener('keydown', (e) => {
+			const step = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+			if (!step) return;
+			const next = tabs[(i + step + tabs.length) % tabs.length];
+			select(next);
+			next.focus();
+		});
+	});
+
+	/* Links com data-profile-open (o item Perfil da barra lateral) abrem a aba no lugar de rolar. */
+	document.querySelectorAll('[data-profile-open]').forEach((a) =>
+		a.addEventListener('click', (e) => {
+			e.preventDefault();
+			setOpen(true);
+		}),
+	);
+
+	/* #profile abre a aba; #profile-p16 e #profile-b5 abrem já no teste. */
+	const hash = location.hash;
+	if (hash.startsWith('#profile')) {
+		const t = tabs.find((x) => hash === `#profile-${x.id.replace('test-tab-', '')}`);
+		if (t) select(t);
+		setOpen(true);
+	}
+</script>
+
+<style>
+	.profile {
+		--panel-w: min(30rem, 100vw);
+		position: fixed;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		z-index: 30;
+		width: var(--panel-w);
+		transform: translateX(100%);
+		transition: transform 0.3s ease;
+		pointer-events: none;
+	}
+
+	.profile.open {
+		transform: none;
+	}
+
+	/* A aba fica pendurada na borda esquerda do painel e desliza junto com ele. */
+	.tab {
+		position: absolute;
+		top: 50%;
+		right: 100%;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 0.75rem;
+		padding: 1rem 0.6rem;
+		border: 1px solid var(--line);
+		border-right: 0;
+		background: var(--card);
+		color: var(--accent-ink);
+		font-family: var(--mono);
+		font-size: 0.72rem;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		cursor: pointer;
+		pointer-events: auto;
+		transform: translateY(-50%);
+	}
+
+	.tab span {
+		writing-mode: vertical-rl;
+		transform: rotate(180deg);
+	}
+
+	.tab-mark {
+		width: 1rem;
+		height: 1.5rem;
+	}
+
+	.tab-mark path {
+		fill: none;
+		stroke: var(--mark);
+		stroke-width: 1.4;
+	}
+
+	.tab-mark circle {
+		fill: var(--mark);
+	}
+
+	.tab:hover {
+		background: var(--accent);
+	}
+
+	.panel {
+		height: 100%;
+		overflow-y: auto;
+		padding: 2.25rem 2rem 2.5rem;
+		border-left: 1px solid var(--line);
+		background: var(--surface);
+		box-shadow: -18px 0 40px -28px rgb(0 0 0 / 0.35);
+		pointer-events: auto;
+		outline: none;
+	}
+
+	.panel-head {
+		display: flex;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: 1rem;
+	}
+
+	.close {
+		padding: 0;
+		border: 0;
+		background: none;
+		font-family: var(--mono);
+		font-size: 0.75rem;
+		color: var(--muted);
+		cursor: pointer;
+	}
+
+	.close:hover {
+		color: var(--ink);
+	}
+
+	h2 {
+		margin-top: 1.25rem;
+		font-size: 2.1rem;
+	}
+
+	.intro {
+		margin-top: 1rem;
+		font-size: 1rem;
+		line-height: 1.6;
+		color: var(--muted);
+	}
+
+	/* Subabas: uma linha de botões, o ativo sublinhado na cor de destaque. */
+	.tests {
+		display: flex;
+		gap: 1.5rem;
+		margin-top: 1.75rem;
+		border-bottom: 1px solid var(--line);
+	}
+
+	.tests button {
+		margin-bottom: -1px;
+		padding: 0 0 0.6rem;
+		border: 0;
+		border-bottom: 2px solid transparent;
+		background: none;
+		font-family: var(--mono);
+		font-size: 0.75rem;
+		letter-spacing: 0.06em;
+		color: var(--muted);
+		cursor: pointer;
+	}
+
+	.tests button:hover {
+		color: var(--ink);
+	}
+
+	.tests button[aria-selected='true'] {
+		border-bottom-color: var(--accent);
+		color: var(--ink);
+	}
+
+	.test {
+		padding-top: 1.5rem;
+	}
+
+	.test-head {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: 0.5rem 1rem;
+	}
+
+	.test-head strong {
+		font-family: var(--serif);
+		font-size: 1.5rem;
+		font-weight: 400;
+		color: var(--ink);
+	}
+
+	.test-head a {
+		font-family: var(--mono);
+		font-size: 0.72rem;
+	}
+
+	.about {
+		margin-top: 0.75rem;
+		font-size: 0.95rem;
+		line-height: 1.6;
+		color: var(--muted);
+	}
+
+	.result {
+		display: grid;
+		gap: 0.2rem;
+		margin-top: 1.5rem;
+		padding: 1rem 1.1rem;
+		background: var(--card);
+		color: var(--accent-ink);
+	}
+
+	.result-label {
+		font-family: var(--mono);
+		font-size: 0.68rem;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		opacity: 0.7;
+	}
+
+	.result strong {
+		font-family: var(--serif);
+		font-size: 1.6rem;
+		font-weight: 400;
+	}
+
+	.result-text {
+		font-size: 0.95rem;
+		line-height: 1.5;
+	}
+
+	/* Gráfico do PI. */
+	.chart {
+		display: block;
+		width: 100%;
+		height: auto;
+		margin-top: 1.75rem;
+	}
+
+	.chart text {
+		font-family: var(--mono);
+	}
+
+	.grid {
+		stroke: var(--line-soft);
+		stroke-width: 1;
+	}
+
+	.grid.mid {
+		stroke: var(--line);
+		stroke-dasharray: 3 3;
+	}
+
+	.track {
+		stroke: var(--line);
+		stroke-width: 1;
+	}
+
+	.pole {
+		font-size: 11px;
+		fill: var(--muted);
+	}
+
+	.pole.on {
+		fill: var(--ink);
+		font-weight: 500;
+	}
+
+	.link {
+		fill: none;
+		stroke: var(--accent);
+		stroke-width: 1.6;
+	}
+
+	.dot circle {
+		fill: var(--surface);
+		stroke: var(--accent);
+		stroke-width: 1.6;
+	}
+
+	.dot text {
+		font-size: 10px;
+		font-weight: 500;
+		fill: var(--accent);
+	}
+
+	.axis {
+		font-size: 10px;
+		fill: var(--muted);
+	}
+
+	/* Lista de fatores (PI) e de traços (Big Five). */
+	.items,
+	.traits {
+		list-style: none;
+		margin-top: 1.5rem;
+		padding: 0;
+		border-top: 1px dotted var(--line);
+	}
+
+	.items li,
+	.traits > li {
+		padding: 1rem 0;
+		border-bottom: 1px dotted var(--line);
+	}
+
+	.i-head,
+	.t-head {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: baseline;
+		gap: 0.3rem 0.7rem;
+	}
+
+	.i-key {
+		font-family: var(--mono);
+		font-size: 0.75rem;
+		color: var(--accent);
+	}
+
+	.i-head strong,
+	.t-head strong {
+		font-family: var(--serif);
+		font-size: 1.3rem;
+		font-weight: 400;
+		color: var(--ink);
+	}
+
+	.i-level {
+		font-family: var(--mono);
+		font-size: 0.68rem;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: var(--muted);
+	}
+
+	.i-text {
+		margin-top: 0.4rem;
+		font-size: 0.98rem;
+		line-height: 1.55;
+	}
+
+	.i-care {
+		margin-top: 0.35rem;
+		font-size: 0.9rem;
+		line-height: 1.5;
+		color: var(--muted);
+	}
+
+	.i-care span {
+		font-family: var(--mono);
+		font-size: 0.72rem;
+		text-transform: uppercase;
+		letter-spacing: 0.08em;
+	}
+
+	/* Escalas do 16Personalities: barra entre dois polos com um marcador. */
+	.scales {
+		list-style: none;
+		display: grid;
+		gap: 1.25rem;
+		margin-top: 1.75rem;
+		padding: 0;
+	}
+
+	.s-head {
+		display: flex;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: 1rem;
+	}
+
+	.s-group {
+		font-family: var(--mono);
+		font-size: 0.68rem;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: var(--muted);
+	}
+
+	.s-head strong {
+		font-size: 0.95rem;
+		font-weight: 600;
+		color: var(--ink);
+	}
+
+	.s-bar {
+		position: relative;
+		height: 0.4rem;
+		margin-top: 0.45rem;
+		background: var(--line);
+	}
+
+	.s-dot {
+		position: absolute;
+		top: 50%;
+		width: 0.9rem;
+		height: 0.9rem;
+		border: 2px solid var(--accent);
+		border-radius: 50%;
+		background: var(--surface);
+		transform: translate(-50%, -50%);
+	}
+
+	.s-poles {
+		display: flex;
+		justify-content: space-between;
+		margin-top: 0.4rem;
+		font-family: var(--mono);
+		font-size: 0.7rem;
+		color: var(--muted);
+	}
+
+	.s-poles .on {
+		color: var(--ink);
+	}
+
+	/* Traços do Big Five: percentil do traço e, abaixo, dos dois aspectos. */
+	.t-head {
+		justify-content: space-between;
+	}
+
+	.t-value {
+		font-family: var(--mono);
+		font-size: 0.95rem;
+		color: var(--ink);
+	}
+
+	.t-bar,
+	.a-bar {
+		position: relative;
+		background: var(--line-soft);
+	}
+
+	.t-bar {
+		height: 0.55rem;
+		margin-top: 0.45rem;
+	}
+
+	.a-bar {
+		height: 0.3rem;
+		margin-top: 0.25rem;
+	}
+
+	.t-bar span,
+	.a-bar span {
+		display: block;
+		height: 100%;
+		background: var(--accent);
+	}
+
+	.a-bar span {
+		opacity: 0.55;
+	}
+
+	/* Linha tracejada na mediana (percentil 50). */
+	.t-bar::after,
+	.a-bar::after {
+		content: '';
+		position: absolute;
+		top: -0.2rem;
+		bottom: -0.2rem;
+		left: 50%;
+		border-left: 1px dashed var(--muted);
+	}
+
+	.aspects {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 1.25rem;
+		margin-top: 0.7rem;
+	}
+
+	.aspect p {
+		display: flex;
+		justify-content: space-between;
+		font-family: var(--mono);
+		font-size: 0.68rem;
+		color: var(--muted);
+	}
+
+	/* Listas curtas: "como trabalho melhor", pontos fortes e de atenção. */
+	.list {
+		margin-top: 1.75rem;
+	}
+
+	.list ul {
+		list-style: none;
+		margin-top: 0.75rem;
+		padding: 0;
+		display: grid;
+		gap: 0.4rem;
+	}
+
+	.list li {
+		position: relative;
+		padding-left: 1.5rem;
+		font-size: 0.98rem;
+		line-height: 1.5;
+	}
+
+	.list li::before {
+		content: '↳';
+		position: absolute;
+		left: 0;
+		color: var(--accent);
+	}
+
+	.list.care li {
+		color: var(--muted);
+	}
+
+	.list.care li::before {
+		content: '!';
+		color: var(--muted);
+		font-family: var(--mono);
+	}
+
+	.note {
+		margin-top: 2rem;
+		font-family: var(--mono);
+		font-size: 0.68rem;
+		line-height: 1.6;
+		color: var(--muted);
+	}
+
+	/* Em tela estreita, a aba vira um botão no canto inferior direito. */
+	@media (max-width: 960px) {
+		.tab {
+			top: auto;
+			bottom: 1rem;
+			right: calc(100% + 1rem);
+			flex-direction: row;
+			padding: 0.6rem 0.85rem;
+			border-right: 1px solid var(--line);
+			transform: none;
+		}
+
+		.tab span {
+			writing-mode: horizontal-tb;
+			white-space: nowrap;
+			transform: none;
+		}
+
+		.tab-mark {
+			width: 0.75rem;
+			height: 1.1rem;
+		}
+
+		.profile.open .tab {
+			display: none;
+		}
+
+		.panel {
+			padding: 1.5rem 1rem 2rem;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.profile {
+			transition: none;
+		}
+	}
+</style>

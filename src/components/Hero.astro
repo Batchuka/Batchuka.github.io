@@ -1,8 +1,10 @@
 ---
 /* Abertura da página: título grande, marca-texto, parágrafo, cartão do laboratório e números. */
+import { languages } from '../data/events';
 import { home } from '../data/home';
 import { site } from '../data/site';
 import { getLangFromUrl } from '../i18n/ui';
+import Skills from './Skills.astro';
 
 const lang = getLangFromUrl(Astro.url);
 const { hero, stats } = home[lang];
@@ -16,11 +18,7 @@ const { hero, stats } = home[lang];
 
 	<a class="card" href={hero.card.href}>
 		<span class="card-icon" aria-hidden="true">
-			<svg viewBox="0 0 64 64">
-				<path d="M14 50V22l10-8 10 8v28M34 50V30h16v20M8 50h48" />
-				<path d="M20 30h8M20 38h8M40 38h4" />
-				<circle cx="24" cy="10" r="3" />
-			</svg>
+			<img src="/logos/green-cinnamon-labs.webp" alt="" />
 		</span>
 		<span class="card-body">
 			<span class="card-kicker">{hero.card.kicker}</span>
@@ -29,7 +27,7 @@ const { hero, stats } = home[lang];
 		</span>
 		<span class="card-arrow" aria-hidden="true">↗</span>
 	</a>
-	<p class="caption">{hero.caption}</p>
+	{'caption' in hero && hero.caption && <p class="caption">{hero.caption}</p>}
 
 	<p class="actions">
 		<a class="text-link" href={hero.primary.href}>{hero.primary.text}</a>
@@ -43,12 +41,21 @@ const { hero, stats } = home[lang];
 					<li>
 						<span class="value">{s.value}</span>
 						<span class="text">{s.text}</span>
-						<a href={s.href}>{s.link} ↗</a>
+						<a href={s.href} data-profile-open={'profile' in s ? '' : undefined}>
+							{s.link} {s.href.startsWith('#') ? '↓' : '↗'}
+						</a>
 					</li>
 				))
 			}
 		</ul>
-		<p class="note">↳ {stats.note}</p>
+		{'note' in stats && stats.note && <p class="note">↳ {stats.note}</p>}
+		<Skills />
+		<p class="langs">
+			<span class="eyebrow">{languages.label[lang]}</span>
+			<span>
+				{languages.text[lang]} <span class="emoji">{languages.emoji}</span>
+			</span>
+		</p>
 	</div>
 </section>
 
@@ -113,14 +120,12 @@ const { hero, stats } = home[lang];
 		border-right: 1px solid rgb(255 255 255 / 0.12);
 	}
 
-	.card-icon svg {
+	/* Ícone do Green Cinnamon Labs (o avatar da organização no GitHub). */
+	.card-icon img {
+		display: block;
 		width: 4.5rem;
 		height: 4.5rem;
-		fill: none;
-		stroke: var(--mark);
-		stroke-width: 2;
-		stroke-linecap: round;
-		stroke-linejoin: round;
+		border-radius: 0.6rem;
 	}
 
 	.card-body {
@@ -182,7 +187,7 @@ const { hero, stats } = home[lang];
 		list-style: none;
 		padding: 0;
 		display: grid;
-		grid-template-columns: repeat(4, 1fr);
+		grid-template-columns: repeat(3, 1fr);
 		border-top: 1px solid var(--line);
 		border-bottom: 1px solid var(--line);
 	}
@@ -197,6 +202,17 @@ const { hero, stats } = home[lang];
 	.stats li + li {
 		padding-left: 1.75rem;
 		border-left: 1px solid var(--line);
+	}
+
+	/* Três por linha: o primeiro de cada linha sem borda à esquerda; as linhas seguintes com borda
+	 * em cima. "li + li" repete a forma da regra acima para vencê-la (escopo do Astro). */
+	.stats li + li:nth-child(3n + 1) {
+		padding-left: 0;
+		border-left: 0;
+	}
+
+	.stats li:nth-child(n + 4) {
+		border-top: 1px solid var(--line);
 	}
 
 	.value {
@@ -224,6 +240,21 @@ const { hero, stats } = home[lang];
 		color: var(--accent);
 	}
 
+	/* Idiomas, logo abaixo dos números. */
+	.langs {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: baseline;
+		gap: 0.5rem 1.5rem;
+		margin-top: 1.75rem;
+		color: var(--muted);
+	}
+
+	/* Emoji numa fonte própria, carregada só com estes caracteres em Base.astro. */
+	.emoji {
+		font-family: 'Noto Color Emoji', sans-serif;
+	}
+
 	.note {
 		margin-top: 1.25rem;
 		font-size: 0.95rem;
@@ -236,7 +267,12 @@ const { hero, stats } = home[lang];
 		}
 
 		/* "li + li" precisa estar aqui para vencer a regra geral, que tem a mesma forma. */
-		.stats li + li:nth-child(3) {
+		.stats li + li:nth-child(2n) {
+			padding-left: 1.75rem;
+			border-left: 1px solid var(--line);
+		}
+
+		.stats li + li:nth-child(2n + 1) {
 			padding-left: 0;
 			border-left: 0;
 		}
@@ -262,7 +298,7 @@ const { hero, stats } = home[lang];
 			border-right: 0;
 		}
 
-		.card-icon svg {
+		.card-icon img {
 			width: 3rem;
 			height: 3rem;
 		}
@@ -275,8 +311,9 @@ const { hero, stats } = home[lang];
 			grid-template-columns: 1fr;
 		}
 
+		/* ":nth-child(n)" iguala a especificidade das regras de duas colunas acima. */
 		.stats li,
-		.stats li + li {
+		.stats li + li:nth-child(n) {
 			padding: 1.5rem 0;
 			border-left: 0;
 		}

@@ -1,0 +1,273 @@
+---
+/*
+ * Arquitetura da primeira implementação da supervisão por Kubernetes (Fig. 2 do artigo), redesenhada.
+ * Caixas escuras são as aplicações próprias; os números seguem a ordem do fluxo.
+ * SVG desenhado à mão (viewBox 1000 x 440); textos nos dois idiomas.
+ */
+import { getLangFromUrl } from '../../i18n/ui';
+
+const lang = getLangFromUrl(Astro.url);
+const t = {
+	pt: {
+		engineer: ['engenheiro', 'de processo'],
+		client: ['operador ou cliente', 'kubectl, IHM web'],
+		api: 'API do Kubernetes',
+		crds: 'CRDs e descritores',
+		verdict: 'Plant · status = veredito',
+		cluster: 'cluster Kubernetes',
+		ctrl: ['Controlador', 'plant-supervisor · Go', 'avalia a cada 30 s', 'e a cada edição'],
+		plant: ['Planta', 'tep-plant sobre monjolo · Rust', 'servidor OPC UA'],
+		hist: ['Historiador', 'tep-historian · Python', 'estatísticas de janela'],
+		edges: ['aplica', 'observa', 'consulta', 'lê', 'grava o veredito', 'leem'],
+		note: 'Arquitetura da primeira implementação. Os números seguem o fluxo.',
+		label:
+			'O engenheiro de processo aplica a política em YAML na API do Kubernetes, onde ficam os recursos CostFunction, OperatingPolicy e Plant. O controlador plant-supervisor observa esses recursos, consulta o historiador, que lê a planta simulada por OPC UA, e grava o veredito no status do Plant, que operadores e clientes leem.',
+	},
+	en: {
+		engineer: ['process', 'engineer'],
+		client: ['operator or client', 'kubectl, web HMI'],
+		api: 'Kubernetes API',
+		crds: 'CRDs and descriptors',
+		verdict: 'Plant · status = verdict',
+		cluster: 'Kubernetes cluster',
+		ctrl: ['Controller', 'plant-supervisor · Go', 'evaluates every 30 s', 'and on each edit'],
+		plant: ['Plant', 'tep-plant on monjolo · Rust', 'OPC UA server'],
+		hist: ['Historian', 'tep-historian · Python', 'window statistics'],
+		edges: ['applies', 'watches', 'queries', 'reads', 'writes the verdict', 'read'],
+		note: 'Architecture of the first implementation. Numbers follow the flow.',
+		label:
+			'The process engineer applies the YAML policy to the Kubernetes API, which holds the CostFunction, OperatingPolicy and Plant resources. The plant-supervisor controller watches these resources, queries the historian, which reads the simulated plant over OPC UA, and writes the verdict to the Plant status, which operators and clients read.',
+	},
+}[lang];
+
+/* Marcadores numerados nas setas: posição e número. */
+const steps = [
+	{ x: 179, y: 122, n: 1 },
+	{ x: 520, y: 190, n: 2 },
+	{ x: 746, y: 322, n: 3 },
+	{ x: 520, y: 360, n: 4 },
+	{ x: 520, y: 262, n: 5 },
+	{ x: 620, y: 70, n: 6 },
+];
+---
+
+<figure class="sup">
+	<svg viewBox="0 0 1000 440" role="img" aria-label={t.label}>
+		<defs>
+			<marker
+				id="sup-arrow"
+				viewBox="0 0 10 10"
+				refX="9"
+				refY="5"
+				markerWidth="7"
+				markerHeight="7"
+				orient="auto-start-reverse"
+			>
+				<path d="M 0 0 L 10 5 L 0 10 z" />
+			</marker>
+		</defs>
+
+		{/* Engenheiro e o descritor em YAML. */}
+		<g class="person">
+			<circle cx="60" cy="40" r="11" />
+			<path d="M 38 80 C 38 60, 82 60, 82 80 Z" />
+		</g>
+		<text class="small" x="60" y="100">{t.engineer[0]}</text>
+		<text class="small" x="60" y="114">{t.engineer[1]}</text>
+		<path class="edge" d="M 92 58 H 140" marker-end="url(#sup-arrow)" />
+		<path class="doc" d="M 146 30 H 196 L 212 46 V 92 H 146 Z M 196 30 V 46 H 212" />
+		<text class="tag" x="179" y="68">YAML</text>
+
+		{/* Operador ou cliente, que lê o veredito. */}
+		<rect class="screen" x="842" y="26" width="58" height="40" rx="2" />
+		<path class="screen-foot" d="M 862 74 H 880 M 871 66 V 74" />
+		<g class="person">
+			<circle cx="944" cy="40" r="11" />
+			<path d="M 922 80 C 922 60, 966 60, 966 80 Z" />
+		</g>
+		<text class="small" x="900" y="100">{t.client[0]}</text>
+		<text class="small" x="900" y="114">{t.client[1]}</text>
+
+		{/* Cluster com a API e o controlador. */}
+		<rect class="cluster" x="120" y="146" width="790" height="168" />
+		<text class="cluster-text" x="130" y="309">{t.cluster}</text>
+
+		<rect class="box api" x="140" y="162" width="300" height="134" />
+		<text class="title start" x="158" y="188">{t.api}</text>
+		<text class="small start" x="158" y="206">{t.crds}</text>
+		<g class="crd">
+			<rect x="158" y="216" width="264" height="20" />
+			<text class="mono start" x="168" y="230">CostFunction</text>
+			<rect x="158" y="241" width="264" height="20" />
+			<text class="mono start" x="168" y="255">OperatingPolicy</text>
+			<rect x="158" y="266" width="264" height="20" />
+			<text class="mono start" x="168" y="280">{t.verdict}</text>
+		</g>
+
+		<rect class="box own" x="620" y="162" width="270" height="134" />
+		<text class="title light" x="755" y="196">{t.ctrl[0]}</text>
+		<text class="small light" x="755" y="220">{t.ctrl[1]}</text>
+		<text class="small light dim" x="755" y="250">{t.ctrl[2]}</text>
+		<text class="small light dim" x="755" y="266">{t.ctrl[3]}</text>
+
+		{/* Planta e historiador, fora do cluster. */}
+		<rect class="box own" x="140" y="346" width="300" height="76" />
+		<text class="title light" x="290" y="372">{t.plant[0]}</text>
+		<text class="small light" x="290" y="392">{t.plant[1]}</text>
+		<text class="small light dim" x="290" y="410">{t.plant[2]}</text>
+
+		<rect class="box own" x="620" y="346" width="270" height="76" />
+		<text class="title light" x="755" y="372">{t.hist[0]}</text>
+		<text class="small light" x="755" y="392">{t.hist[1]}</text>
+		<text class="small light dim" x="755" y="410">{t.hist[2]}</text>
+
+		{/* Fluxo. */}
+		<g class="edges">
+			<path d="M 179 92 V 160" marker-end="url(#sup-arrow)" />
+			<path d="M 442 206 H 618" marker-end="url(#sup-arrow)" />
+			<path d="M 755 298 V 344" marker-end="url(#sup-arrow)" />
+			<path d="M 442 384 H 618" marker-start="url(#sup-arrow)" />
+			<path d="M 618 252 H 442" marker-end="url(#sup-arrow)" />
+			<path d="M 400 160 V 46 H 836" marker-end="url(#sup-arrow)" />
+		</g>
+		<g class="edge-text">
+			<text class="start" x="194" y="126">{t.edges[0]}</text>
+			<text x="530" y="222">{t.edges[1]}</text>
+			<text class="start" x="764" y="340">{t.edges[2]}</text>
+			<text x="530" y="400">OPC UA · {t.edges[3]}</text>
+			<text x="530" y="244">{t.edges[4]}</text>
+			<text x="620" y="38">{t.edges[5]}</text>
+		</g>
+		{
+			steps.map((s) => (
+				<g class="step">
+					<circle cx={s.x} cy={s.y} r="9" />
+					<text x={s.x} y={s.y + 3.5}>
+						{s.n}
+					</text>
+				</g>
+			))
+		}
+	</svg>
+	<figcaption>{t.note}</figcaption>
+</figure>
+
+<style>
+	.sup {
+		margin: 0;
+	}
+
+	svg {
+		display: block;
+		width: 100%;
+		height: auto;
+	}
+
+	text {
+		font-family: var(--mono);
+		text-anchor: middle;
+		fill: var(--ink);
+	}
+
+	text.start,
+	.edge-text text.start {
+		text-anchor: start;
+	}
+
+	.small {
+		font-size: 12px;
+		fill: var(--muted);
+	}
+
+	.title {
+		font-family: var(--serif);
+		font-size: 19px;
+	}
+
+	.mono {
+		font-size: 12px;
+	}
+
+	.tag {
+		font-size: 11px;
+		font-weight: 500;
+	}
+
+	.light {
+		fill: var(--accent-ink);
+	}
+
+	.light.dim {
+		opacity: 0.7;
+	}
+
+	.person circle,
+	.person path,
+	.doc,
+	.screen,
+	.screen-foot {
+		fill: none;
+		stroke: var(--ink);
+		stroke-width: 1.6;
+	}
+
+	.cluster {
+		fill: none;
+		stroke: var(--muted);
+		stroke-width: 1.2;
+		stroke-dasharray: 4 4;
+	}
+
+	.cluster-text {
+		font-size: 11px;
+		text-anchor: start;
+		fill: var(--muted);
+	}
+
+	.box.api {
+		fill: var(--surface);
+		stroke: var(--line);
+		stroke-width: 1.2;
+	}
+
+	.crd rect {
+		fill: var(--bg);
+		stroke: var(--line);
+	}
+
+	.box.own {
+		fill: var(--card);
+	}
+
+	.edges path,
+	.edge {
+		fill: none;
+		stroke: var(--muted);
+		stroke-width: 1.5;
+	}
+
+	marker path {
+		fill: var(--muted);
+	}
+
+	.edge-text text {
+		font-size: 11px;
+		fill: var(--muted);
+	}
+
+	.step circle {
+		fill: var(--mark);
+	}
+
+	.step text {
+		font-size: 11px;
+		font-weight: 500;
+	}
+
+	figcaption {
+		margin-top: 0.6rem;
+		font-family: var(--mono);
+		font-size: 0.72rem;
+		color: var(--muted);
+	}
+</style>

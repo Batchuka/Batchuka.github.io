@@ -110,6 +110,17 @@ a {
 	color: var(--ink);
 }
 
+/* Link dentro de um texto corrido do conteúdo ([texto](href), ver src/utils/inline.ts). */
+.inline-link {
+	color: var(--ink);
+	text-decoration-color: var(--accent);
+	text-underline-offset: 3px;
+}
+
+.inline-link:hover {
+	color: var(--accent);
+}
+
 /* Esqueleto: barra lateral fixa à esquerda, conteúdo à direita. */
 .page {
 	min-height: 100vh;

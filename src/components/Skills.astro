@@ -1,0 +1,301 @@
+---
+/*
+ * Mapa de habilidades: gráfico de aranha com uma série (o nível de cada área, de 1 a 5) e, ao
+ * lado, a lista com o nível exato, o que ele significa e as ferramentas, que serve também de
+ * leitura sem o gráfico. SVG desenhado à mão; dados em src/data/skills.ts.
+ */
+import { skills } from '../data/skills';
+import { getLangFromUrl } from '../i18n/ui';
+
+const lang = getLangFromUrl(Astro.url);
+const s = skills[lang];
+
+/* Geometria: centro (300, 235), raio 160 para o nível 5, primeiro eixo no topo. */
+const cx = 300;
+const cy = 235;
+const R = 160;
+const n = s.areas.length;
+const angle = (i: number) => -Math.PI / 2 + (2 * Math.PI * i) / n;
+const at = (i: number, r: number) => [cx + r * Math.cos(angle(i)), cy + r * Math.sin(angle(i))];
+const ring = (lvl: number) =>
+	s.areas.map((_, i) => at(i, (R * lvl) / 5).map((v) => v.toFixed(1)).join(',')).join(' ');
+const shape = s.areas
+	.map((a, i) => at(i, (R * a.level) / 5).map((v) => v.toFixed(1)).join(','))
+	.join(' ');
+
+/* Rótulo do eixo: fora do anel externo, alinhado pelo lado em que cai; nomes longos em 2 linhas. */
+const label = (i: number, name: string) => {
+	const [x, y] = at(i, R + 24);
+	const c = Math.cos(angle(i));
+	const anchor = Math.abs(c) < 0.2 ? 'middle' : c > 0 ? 'start' : 'end';
+	let lines = [name];
+	if (name.length > 14 && name.includes(' ')) {
+		const mid = name.length / 2;
+		const cut = [...name.matchAll(/ /g)]
+			.map((m) => m.index ?? 0)
+			.sort((a, b) => Math.abs(a - mid) - Math.abs(b - mid))[0];
+		lines = [name.slice(0, cut), name.slice(cut + 1)];
+	}
+	const sn = Math.sin(angle(i));
+	const dy = sn < -0.5 ? -(lines.length - 1) * 16 : sn > 0.5 ? 10 : -((lines.length - 1) * 16) / 2 + 5;
+	return { x, y: y + dy, anchor, lines };
+};
+---
+
+<div class="skills" id="skills">
+	<header>
+		<h3 class="eyebrow">{s.title}</h3>
+		<p>{s.lead}</p>
+	</header>
+
+	<div class="layout">
+		<figure class="chart">
+		<svg viewBox="28 14 544 436" role="img" aria-label={s.chartLabel}>
+			<g class="grid">
+				{[1, 2, 3, 4, 5].map((l) => <polygon points={ring(l)} />)}
+				{
+					s.areas.map((_, i) => {
+						const [x, y] = at(i, R);
+						return <line x1={cx} y1={cy} x2={x} y2={y} />;
+					})
+				}
+			</g>
+			<g class="ticks">
+				{
+					[1, 2, 3, 4, 5].map((l) => (
+						<text x={cx + 6} y={cy - (R * l) / 5 + 4}>
+							{l}
+						</text>
+					))
+				}
+			</g>
+
+			<polygon class="shape" points={shape} />
+
+			{
+				s.areas.map((a, i) => {
+					const [x, y] = at(i, (R * a.level) / 5);
+					return (
+						<g class="pt">
+							<title>{`${a.name}: ${a.level} · ${s.scale[a.level - 1]}`}</title>
+							<circle class="hit" cx={x} cy={y} r="14" />
+							<circle class="mark" cx={x} cy={y} r="5.5" />
+						</g>
+					);
+				})
+			}
+
+			{
+				s.areas.map((a, i) => {
+					const l = label(i, a.name);
+					return (
+						<text class="axis" x={l.x} y={l.y} style={`text-anchor: ${l.anchor}`}>
+							{l.lines.map((line, k) => (
+								<tspan x={l.x} dy={k === 0 ? 0 : 16}>
+									{line}
+								</tspan>
+							))}
+						</text>
+					);
+				})
+			}
+		</svg>
+			<figcaption>
+				<ol class="scale">
+					{s.scale.map((t, i) => (
+						<li>
+							<strong>{i + 1}</strong> {t}
+						</li>
+					))}
+				</ol>
+			</figcaption>
+		</figure>
+
+		<ol class="list">
+			{
+				s.areas.map((a) => (
+					<li>
+						<p class="row">
+							<span class="name">{a.name}</span>
+							<span class="dots" title={`${a.level} · ${s.scale[a.level - 1]}`}>
+								<span class="sr">{`${a.level} · ${s.scale[a.level - 1]}`}</span>
+								{[1, 2, 3, 4, 5].map((d) => (
+									<span class:list={['d', { on: d <= a.level }]} />
+								))}
+							</span>
+						</p>
+						<p class="tools">{a.tools.join(' · ')}</p>
+					</li>
+				))
+			}
+		</ol>
+	</div>
+</div>
+
+<style>
+	.skills {
+		margin-top: clamp(3rem, 6vw, 4.5rem);
+	}
+
+	header {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: baseline;
+		gap: 0.5rem 1.5rem;
+	}
+
+	header h3 {
+		color: var(--accent);
+	}
+
+	header p {
+		color: var(--muted);
+	}
+
+	.layout {
+		display: grid;
+		grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+		align-items: center;
+		gap: clamp(1.5rem, 4vw, 3.5rem);
+		margin-top: 1.5rem;
+	}
+
+	svg {
+		display: block;
+		width: 100%;
+		height: auto;
+	}
+
+	/* Grade recessiva: anéis e raios finos na cor das linhas. */
+	.grid polygon,
+	.grid line {
+		fill: none;
+		stroke: var(--line);
+		stroke-width: 1;
+	}
+
+	.grid polygon:last-of-type {
+		stroke: var(--muted);
+		stroke-opacity: 0.5;
+	}
+
+	.ticks text {
+		font-family: var(--mono);
+		font-size: 10px;
+		fill: var(--muted);
+	}
+
+	.shape {
+		fill: var(--accent);
+		fill-opacity: 0.16;
+		stroke: var(--accent);
+		stroke-width: 2;
+		stroke-linejoin: round;
+	}
+
+	/* Ponto com anel da cor da página, e área de toque maior que o ponto. */
+	.mark {
+		fill: var(--accent);
+		stroke: var(--bg);
+		stroke-width: 2;
+	}
+
+	.hit {
+		fill: transparent;
+	}
+
+	.pt:hover .mark {
+		r: 7.5;
+	}
+
+	.axis {
+		font-family: var(--sans);
+		font-size: 15px;
+		fill: var(--ink);
+	}
+
+	.list {
+		list-style: none;
+		padding: 0;
+		border-top: 1px solid var(--line);
+	}
+
+	.list li {
+		padding-block: 0.6rem;
+		border-bottom: 1px solid var(--line);
+	}
+
+	.row {
+		display: grid;
+		grid-template-columns: 1fr auto;
+		align-items: center;
+		gap: 0.2rem 1rem;
+	}
+
+	.name {
+		font-family: var(--serif);
+		font-size: 1.15rem;
+		color: var(--ink);
+	}
+
+	.dots {
+		display: flex;
+		gap: 0.25rem;
+	}
+
+	.d {
+		width: 0.62rem;
+		height: 0.62rem;
+		border-radius: 50%;
+		background: var(--line);
+	}
+
+	.d.on {
+		background: var(--accent);
+	}
+
+	/* Texto só para leitor de tela (o nível que os pontos mostram). */
+	.sr {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		overflow: hidden;
+		clip-path: inset(50%);
+	}
+
+	.chart {
+		margin: 0;
+	}
+
+	/* Escala de 1 a 5, uma vez, embaixo do gráfico. */
+	.scale {
+		list-style: none;
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		gap: 0.3rem 1.1rem;
+		margin-top: 0.75rem;
+		padding: 0;
+		font-family: var(--mono);
+		font-size: 0.7rem;
+		color: var(--muted);
+	}
+
+	.scale strong {
+		font-weight: 500;
+		color: var(--accent);
+	}
+
+	.tools {
+		margin-top: 0.2rem;
+		font-family: var(--mono);
+		font-size: 0.7rem;
+		color: var(--muted);
+	}
+
+	@media (max-width: 960px) {
+		.layout {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

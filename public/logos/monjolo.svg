@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     width="1000" height="1000"
+     viewBox="0 0 1000 1000"
+     role="img"
+     aria-labelledby="title desc">
+  <title id="title">Ícone simplificado de monjolo</title>
+  <desc id="desc">Bacia de madeira com massa de grãos, tronco vertical e braço horizontal atravessando a estrutura.</desc>
+  <g stroke="#5a2f0d" stroke-width="16" stroke-linejoin="round" stroke-linecap="round">
+    <path d="
+      M 180 610
+      C 180 515 305 455 500 455
+      C 695 455 820 515 820 610
+      L 800 805
+      C 792 885 680 930 500 930
+      C 320 930 208 885 200 805
+      Z"
+      fill="#a95c18"/>
+    <ellipse cx="500" cy="610" rx="320" ry="165" fill="#c87524"/>
+    <ellipse cx="500" cy="625" rx="245" ry="118" fill="#7f3f0f"/>
+    <path d="
+      M 285 665
+      C 325 610 395 585 500 585
+      C 605 585 675 610 715 665
+      C 668 715 596 740 500 740
+      C 404 740 332 715 285 665
+      Z"
+      fill="#c89a1e"
+      stroke="none"/>
+    <g fill="#d8b447" stroke="none" opacity="0.75">
+      <circle cx="385" cy="655" r="7"/>
+      <circle cx="430" cy="690" r="6"/>
+      <circle cx="545" cy="650" r="7"/>
+      <circle cx="600" cy="685" r="6"/>
+      <circle cx="660" cy="650" r="5"/>
+      <circle cx="330" cy="690" r="5"/>
+    </g>
+    <path d="
+      M 410 150
+      C 425 125 575 125 590 150
+      L 590 700
+      Q 500 716 410 700
+      Z"
+      fill="#b8661d"/>
+    <ellipse cx="500" cy="150" rx="90" ry="38" fill="#d98930"/>
+    <path d="M 545 175 L 545 695 Q 525 706 508 710"
+          fill="none" stroke="#9a4d15" stroke-width="18" opacity="0.38"/>
+    <g transform="rotate(-5 500 365)">
+      <path d="
+        M 205 315
+        Q 185 335 185 365
+        Q 185 395 205 415
+        L 410 415
+        L 410 315
+        Z"
+        fill="#b8661d"/>
+      <path d="
+        M 590 315
+        L 795 315
+        Q 815 335 815 365
+        Q 815 395 795 415
+        L 590 415
+        Z"
+        fill="#b8661d"/>
+    </g>
+    <g stroke="#8f4612" stroke-width="9" opacity="0.42">
+      <path d="M 445 210 L 445 675"/>
+      <path d="M 550 220 L 550 665"/>
+      <path d="M 260 760 Q 300 800 350 820"/>
+      <path d="M 650 820 Q 700 800 740 760"/>
+    </g>
+  </g>
+</svg>

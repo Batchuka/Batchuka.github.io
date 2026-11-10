@@ -1,6 +1,6 @@
 ---
 /*
- * Barra lateral fixa: marca, local, navegação numerada pelas seções e links no rodapé.
+ * Barra lateral fixa: marca, local e navegação numerada pelas seções.
  * Em telas estreitas vira um cabeçalho no topo da página.
  */
 import { site } from '../data/site';
@@ -8,7 +8,7 @@ import { getLangFromUrl, useTranslations } from '../i18n/ui';
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
-const sections = ['experience', 'projects', 'research', 'toolbox', 'services', 'contact'] as const;
+const sections = ['experience', 'research', 'supervision', 'profile', 'contact'] as const;
 ---
 
 <aside class="sidebar">
@@ -26,7 +26,11 @@ const sections = ['experience', 'projects', 'research', 'toolbox', 'services', '
 			{
 				sections.map((s, i) => (
 					<li>
-						<a href={`#${s}`} data-section={s}>
+						<a
+							href={`#${s}`}
+							data-section={s}
+							data-profile-open={s === 'profile' ? '' : undefined}
+						>
 							<span class="num">{String(i + 1).padStart(2, '0')}</span>
 							<span class="label">{t(`nav.${s}`)}</span>
 						</a>
@@ -36,25 +40,6 @@ const sections = ['experience', 'projects', 'research', 'toolbox', 'services', '
 		</ol>
 	</nav>
 
-	<div class="side-foot">
-		<p class="status">{site.status[lang]}</p>
-		<div class="icons">
-			<a href={site.links.github} aria-label="GitHub" title="GitHub">
-				<svg viewBox="0 0 16 16" aria-hidden="true">
-					<path
-						d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"
-					></path>
-				</svg>
-			</a>
-			{
-				site.links.linkedin && (
-					<a href={site.links.linkedin} aria-label="LinkedIn" title="LinkedIn" class="in">
-						in
-					</a>
-				)
-			}
-		</div>
-	</div>
 </aside>
 
 <script>
@@ -205,53 +190,6 @@ const sections = ['experience', 'projects', 'research', 'toolbox', 'services', '
 		background: var(--accent);
 	}
 
-	.side-foot {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		gap: 1rem;
-		padding-top: 1.6rem;
-		border-top: 1px solid var(--line);
-	}
-
-	.status {
-		max-width: 11rem;
-		font-family: var(--mono);
-		font-size: 0.68rem;
-		line-height: 1.6;
-		letter-spacing: 0.1em;
-		text-transform: uppercase;
-		color: var(--muted);
-	}
-
-	.icons {
-		display: flex;
-		gap: 0.6rem;
-	}
-
-	.icons a {
-		display: grid;
-		place-items: center;
-		width: 2.9rem;
-		height: 2.9rem;
-		border: 1px solid var(--line);
-		color: var(--ink-soft);
-		text-decoration: none;
-		font-weight: 600;
-		transition: border-color 0.15s, color 0.15s;
-	}
-
-	.icons a:hover {
-		border-color: var(--ink);
-		color: var(--ink);
-	}
-
-	.icons svg {
-		width: 1.25rem;
-		height: 1.25rem;
-		fill: currentColor;
-	}
-
 	@media (max-width: 960px) {
 		.sidebar {
 			position: static;
@@ -302,10 +240,6 @@ const sections = ['experience', 'projects', 'research', 'toolbox', 'services', '
 
 		.label {
 			font-size: 1.15rem;
-		}
-
-		.side-foot {
-			display: none;
 		}
 	}
 </style>

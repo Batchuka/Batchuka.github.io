@@ -1,0 +1,284 @@
+---
+/*
+ * Pipeline de Extração e Classificação, no estilo dos diagramas da AWS: um quadrado por serviço,
+ * colorido pela categoria (rede, integração, computação, ML), sem os ícones oficiais.
+ * Linha de cima: o fluxo principal, com os rótulos acima dos ícones para deixar livres as setas
+ * que descem. Linha de baixo: os serviços que o DU e o CLF acionam.
+ * SVG desenhado à mão (viewBox 1140 x 440); textos nos dois idiomas.
+ */
+import { getLangFromUrl } from '../../i18n/ui';
+import { icons } from './aws';
+
+const lang = getLangFromUrl(Astro.url);
+const text = {
+	pt: {
+		user: ['operação', 'envia e valida'],
+		front: 'front em Angular',
+		ecs: 'Spring Boot · ECS',
+		du: 'Document Understanding',
+		clf: 'Classificação Fiscal',
+		erp: 'fora da AWS',
+		sqs: 'fila de extrações',
+		lambda: 'Python · regex',
+		textract: 'OCR e layout',
+		bedrock: 'foundation models',
+		faiss: 'classificações anteriores',
+		upload: 'PDF · validação',
+		simple: 'simples',
+		complex: 'complexos',
+		result: 'resultado',
+		validated: 'extração validada',
+		persist: 'persiste',
+		note: 'Diagrama ultra simplificado.',
+		label:
+			'Pipeline de Extração e Classificação. A operação envia a invoice pelo front em CloudFront ao Document Understanding, um Spring Boot no ECS, que enfileira as extrações: as simples vão por SQS a uma Lambda com regex, as complexas ao Textract, e ambas devolvem o resultado ao DU. A operação valida a extração no front; depois, a Classificação Fiscal, outro Spring Boot no ECS, persiste os dados no ERP Conexos e consulta o Bedrock e um serviço Python com FAISS.',
+	},
+	en: {
+		user: ['operations', 'sends and validates'],
+		front: 'Angular front end',
+		ecs: 'Spring Boot · ECS',
+		du: 'Document Understanding',
+		clf: 'Tax Classification',
+		erp: 'outside AWS',
+		sqs: 'extraction queue',
+		lambda: 'Python · regex',
+		textract: 'OCR and layout',
+		bedrock: 'foundation models',
+		faiss: 'past classifications',
+		upload: 'PDF · validation',
+		simple: 'simple',
+		complex: 'complex',
+		result: 'result',
+		validated: 'validated extraction',
+		persist: 'persists',
+		note: 'Ultra-simplified diagram.',
+		label:
+			'Extraction and Classification Pipeline. Operations sends the invoice through the CloudFront front end to Document Understanding, a Spring Boot app on ECS, which queues the extractions: simple ones go through SQS to a regex Lambda, complex ones to Textract, and both report back to DU. Operations validates the extraction in the front end; then Tax Classification, another Spring Boot app on ECS, persists the data in the Conexos ERP and queries Bedrock and a Python service with FAISS.',
+	},
+}[lang];
+
+/*
+ * cat: categoria de cor no padrão da AWS; "svc" são aplicações próprias, "ext" é sistema externo.
+ * up: rótulo acima do ícone (linha de cima).
+ */
+const nodes = [
+	{ x: 200, y: 170, up: true, icon: 'globe', name: 'CloudFront', role: text.front, cat: 'net' },
+	{ x: 430, y: 170, up: true, icon: 'doc', name: text.du, role: text.ecs, cat: 'svc' },
+	{ x: 760, y: 170, up: true, icon: 'tag', name: text.clf, role: text.ecs, cat: 'svc' },
+	{ x: 1075, y: 170, up: true, icon: 'db', name: 'ERP Conexos', role: text.erp, cat: 'ext' },
+	{ x: 290, y: 340, up: false, icon: 'queue', name: 'SQS', role: text.sqs, cat: 'int' },
+	{ x: 440, y: 340, up: false, icon: 'lambda', name: 'Lambda', role: text.lambda, cat: 'cmp' },
+	{ x: 555, y: 340, up: false, icon: 'scan', name: 'Textract', role: text.textract, cat: 'ml' },
+	{ x: 705, y: 340, up: false, icon: 'spark', name: 'Bedrock', role: text.bedrock, cat: 'ml' },
+	{ x: 900, y: 340, up: false, icon: 'search', name: 'Python · FAISS', role: text.faiss, cat: 'svc' },
+];
+
+/* Rótulos acima: nome e papel sobre o ícone; abaixo: nome e papel sob o ícone. */
+type Node = (typeof nodes)[number];
+const nameY = (n: Node) => (n.up ? n.y - 54 : n.y + 50);
+const roleY = (n: Node) => (n.up ? n.y - 38 : n.y + 68);
+---
+
+<figure class="arch">
+	<svg viewBox="0 0 1140 440" role="img" aria-label={text.label}>
+		<defs>
+			<marker
+				id="arch-arrow"
+				viewBox="0 0 10 10"
+				refX="9"
+				refY="5"
+				markerWidth="7"
+				markerHeight="7"
+				orient="auto-start-reverse"
+			>
+				<path d="M 0 0 L 10 5 L 0 10 z" />
+			</marker>
+		</defs>
+
+		<rect class="cloud" x="130" y="16" width="880" height="412" />
+		<rect class="cloud-tag" x="130" y="16" width="96" height="24" />
+		<text class="cloud-tag-text" x="178" y="33">AWS Cloud</text>
+
+		<g class="user">
+			<circle cx="60" cy="152" r="11" />
+			<path d="M 38 192 C 38 172, 82 172, 82 192 Z" />
+			<text class="name" x="60" y="116">{text.user[0]}</text>
+			<text class="role" x="60" y="132">{text.user[1]}</text>
+		</g>
+
+		<g class="edges">
+			<path d="M 90 170 H 170" marker-end="url(#arch-arrow)" />
+			<path d="M 230 170 H 400" marker-start="url(#arch-arrow)" marker-end="url(#arch-arrow)" />
+			<path d="M 415 200 V 260 H 290 V 310" marker-end="url(#arch-arrow)" />
+			<path d="M 320 340 H 410" marker-end="url(#arch-arrow)" />
+			<path d="M 440 310 V 200" marker-end="url(#arch-arrow)" />
+			<path
+				d="M 460 185 H 555 V 310"
+				marker-start="url(#arch-arrow)"
+				marker-end="url(#arch-arrow)"
+			/>
+			<path d="M 460 170 H 730" marker-end="url(#arch-arrow)" />
+			<path
+				d="M 745 200 V 260 H 705 V 310"
+				marker-start="url(#arch-arrow)"
+				marker-end="url(#arch-arrow)"
+			/>
+			<path
+				d="M 775 200 V 260 H 900 V 310"
+				marker-start="url(#arch-arrow)"
+				marker-end="url(#arch-arrow)"
+			/>
+			<path d="M 790 170 H 1045" marker-start="url(#arch-arrow)" marker-end="url(#arch-arrow)" />
+		</g>
+
+		<g class="edge-labels">
+			<text x="315" y="190">{text.upload}</text>
+			<text x="352" y="252">{text.simple}</text>
+			<text class="start" x="448" y="252">{text.result}</text>
+			<text x="512" y="203">{text.complex}</text>
+			<text x="595" y="160">{text.validated}</text>
+			<text x="918" y="160">{text.persist}</text>
+		</g>
+
+		{
+			nodes.map((n) => (
+				<g class={`node ${n.cat}`}>
+					<rect x={n.x - 28} y={n.y - 28} width="56" height="56" rx="4" />
+					<g class="icon" transform={`translate(${n.x} ${n.y})`}>
+						{icons[n.icon].s && <path class="s" d={icons[n.icon].s} />}
+						{icons[n.icon].f && <path class="f" d={icons[n.icon].f} />}
+					</g>
+					<text class="name" x={n.x} y={nameY(n)}>
+						{n.name}
+					</text>
+					<text class="role" x={n.x} y={roleY(n)}>
+						{n.role}
+					</text>
+				</g>
+			))
+		}
+	</svg>
+	<figcaption>
+		{text.note}
+	</figcaption>
+</figure>
+
+<style>
+	.arch {
+		margin: 2rem 0 0;
+	}
+
+	svg {
+		display: block;
+		width: 100%;
+		height: auto;
+	}
+
+	text {
+		font-family: var(--mono);
+		text-anchor: middle;
+	}
+
+	.cloud {
+		fill: none;
+		stroke: var(--ink);
+		stroke-width: 1.2;
+	}
+
+	.cloud-tag {
+		fill: var(--ink);
+	}
+
+	.cloud-tag-text {
+		font-size: 12px;
+		fill: var(--bg);
+	}
+
+	.user circle,
+	.user path {
+		fill: none;
+		stroke: var(--ink);
+		stroke-width: 1.8;
+	}
+
+	.edges path {
+		fill: none;
+		stroke: var(--muted);
+		stroke-width: 1.5;
+	}
+
+	marker path {
+		fill: var(--muted);
+	}
+
+	.edge-labels text {
+		font-size: 12px;
+		fill: var(--muted);
+	}
+
+	.edge-labels .start {
+		text-anchor: start;
+	}
+
+	.icon .s {
+		fill: none;
+		stroke: #fff;
+		stroke-width: 2;
+		stroke-linecap: round;
+		stroke-linejoin: round;
+	}
+
+	.icon .f {
+		fill: #fff;
+	}
+
+	.name {
+		font-size: 14px;
+		fill: var(--ink);
+	}
+
+	.role {
+		font-size: 13px;
+		fill: var(--muted);
+	}
+
+	/* Cores das categorias da AWS; aplicações próprias ficam na cor do site. */
+	.net rect {
+		fill: #8c4fff;
+	}
+
+	.int rect {
+		fill: #e7157b;
+	}
+
+	.cmp rect {
+		fill: #ed7100;
+	}
+
+	.ml rect {
+		fill: #01a88d;
+	}
+
+	.svc rect {
+		fill: var(--card);
+	}
+
+	/* Sistema externo: só o contorno, fora da nuvem. */
+	.ext rect {
+		fill: var(--bg);
+		stroke: var(--ink);
+		stroke-width: 1.5;
+	}
+
+	.ext .icon .s {
+		stroke: var(--ink);
+	}
+
+	figcaption {
+		margin-top: 0.6rem;
+		font-family: var(--mono);
+		font-size: 0.72rem;
+		line-height: 1.5;
+		color: var(--muted);
+	}
+</style>

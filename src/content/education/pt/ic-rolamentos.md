@@ -9,6 +9,6 @@ bullets:
   - Implementei e avaliei um pipeline em Python com pré-processamento por wavelets, descritores estatísticos e classificadores SVM, KNN e árvore de decisão, comparando os resultados com e sem a transformada.
   - Estudei abordagens com CNN e LSTM para predição de falhas e apresentei o trabalho na VII Jornada de Integração do Ifes.
 links:
-  - text: código ↗
+  - text: github ↗
     href: https://github.com/Batchuka/predictive-maintenance-cnn-wavelet
 ---

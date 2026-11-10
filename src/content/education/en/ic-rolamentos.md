@@ -9,6 +9,6 @@ bullets:
   - Built and evaluated a Python pipeline with wavelet preprocessing, statistical descriptors and SVM, KNN and decision-tree classifiers, comparing results with and without the transform.
   - Studied CNN and LSTM approaches to fault prediction and presented the work at the 7th Ifes Integration Conference.
 links:
-  - text: code ↗
+  - text: github ↗
     href: https://github.com/Batchuka/predictive-maintenance-cnn-wavelet
 ---

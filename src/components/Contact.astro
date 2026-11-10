@@ -1,5 +1,8 @@
 ---
-/* 05 Contato: links de src/data/site.ts. Os que estiverem vazios não aparecem. */
+/*
+ * 05 Contato: um botão quadrado com ícone para cada link de src/data/site.ts (e-mail, LinkedIn,
+ * GitHub e Lattes), no estilo dos ícones da barra lateral. Os que estiverem vazios não aparecem.
+ */
 import { home } from '../data/home';
 import { site } from '../data/site';
 import { getLangFromUrl } from '../i18n/ui';
@@ -7,27 +10,45 @@ import SectionHead from './SectionHead.astro';
 
 const lang = getLangFromUrl(Astro.url);
 const copy = home[lang].contact;
-const { email, github, lab, linkedin, lattes } = site.links;
-const bare = (url: string) => url.replace(/^https?:\/\/(www\.)?/, '');
+const { email, github, linkedin, lattes } = site.links;
+
+/* Ícones em 24 x 24. fill: preenchidos (marcas); stroke: de traço (e-mail, Lattes). */
+const icons = {
+	email: { stroke: 'M 3 6 H 21 V 18 H 3 Z M 3 6 L 12 13 L 21 6' },
+	linkedin: {
+		fill: 'M 4.98 3.5 a 2.5 2.5 0 1 1 0 5 a 2.5 2.5 0 0 1 0 -5 Z M 3 9.5 H 7 V 21 H 3 Z M 9.5 9.5 H 13.3 V 11.1 C 13.8 10.2 15 9.2 16.9 9.2 C 20.9 9.2 21.5 11.8 21.5 15.2 V 21 H 17.5 V 15.9 C 17.5 14.6 17.5 12.9 15.7 12.9 C 13.9 12.9 13.6 14.3 13.6 15.8 V 21 H 9.5 Z',
+	},
+	github: {
+		fill: 'M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.1.79-.25.79-.56 0-.27-.01-1-.02-1.96-3.2.7-3.87-1.54-3.87-1.54-.52-1.33-1.28-1.68-1.28-1.68-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.03 1.76 2.69 1.25 3.35.96.1-.74.4-1.25.73-1.54-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.18-3.09-.12-.29-.51-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.8 1.18 1.83 1.18 3.09 0 4.42-2.69 5.39-5.25 5.68.41.36.78 1.06.78 2.14 0 1.55-.01 2.79-.01 3.17 0 .31.21.67.8.56A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5Z',
+	},
+	/* Lattes: capelo de formatura, para o currículo acadêmico. */
+	lattes: { stroke: 'M 2 9 L 12 4.5 L 22 9 L 12 13.5 Z M 6 11 V 16 C 6 17.5 9 19 12 19 C 15 19 18 17.5 18 16 V 11 M 22 9 V 14' },
+};
 
 const links = [
-	{ label: copy.labels.email, href: email && `mailto:${email}`, text: email },
-	{ label: copy.labels.linkedin, href: linkedin, text: bare(linkedin) },
-	{ label: copy.labels.github, href: github, text: bare(github) },
-	{ label: copy.labels.lab, href: lab, text: bare(lab) },
-	{ label: copy.labels.lattes, href: lattes, text: bare(lattes) },
-].filter((l) => l.href);
+	{ key: 'email', label: copy.labels.email, href: email && `mailto:${email}`, title: email },
+	{ key: 'linkedin', label: copy.labels.linkedin, href: linkedin, title: linkedin },
+	{ key: 'github', label: copy.labels.github, href: github, title: github },
+	{ key: 'lattes', label: copy.labels.lattes, href: lattes, title: lattes },
+].filter((l) => l.href) as { key: keyof typeof icons; label: string; href: string; title: string }[];
 ---
 
 <section class="section" id="contact">
-	<SectionHead eyebrow={copy.eyebrow} title={copy.title} lead={copy.lead} />
+	<SectionHead eyebrow={copy.eyebrow} title={copy.title} />
 
 	<ul class="links">
 		{
 			links.map((l) => (
 				<li>
-					<span class="label">{l.label}</span>
-					<a href={l.href}>{l.text} ↗</a>
+					<a href={l.href} title={l.title} aria-label={l.label}>
+						<svg viewBox="0 0 24 24" aria-hidden="true">
+							{icons[l.key].fill && <path class="fill" d={icons[l.key].fill} />}
+							{icons[l.key].stroke && <path class="stroke" d={icons[l.key].stroke} />}
+						</svg>
+					</a>
+					<span class="label" aria-hidden="true">
+						{l.label}
+					</span>
 				</li>
 			))
 		}
@@ -41,42 +62,56 @@ const links = [
 
 	.links {
 		list-style: none;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 1.5rem;
+		margin-top: 1rem;
 		padding: 0;
-		border-top: 1px solid var(--line);
 	}
 
 	li {
 		display: grid;
-		grid-template-columns: 16rem 1fr;
-		align-items: baseline;
-		gap: 0.5rem 1rem;
-		padding-block: 1.75rem;
-		border-bottom: 1px solid var(--line);
+		justify-items: center;
+		gap: 0.7rem;
+	}
+
+	a {
+		display: grid;
+		place-items: center;
+		width: 5.5rem;
+		height: 5.5rem;
+		border: 1px solid var(--line);
+		color: var(--ink-soft);
+		transition: border-color 0.15s, color 0.15s;
+	}
+
+	a:hover {
+		border-color: var(--ink);
+		color: var(--accent);
+	}
+
+	svg {
+		width: 2rem;
+		height: 2rem;
+	}
+
+	.fill {
+		fill: currentColor;
+	}
+
+	.stroke {
+		fill: none;
+		stroke: currentColor;
+		stroke-width: 1.7;
+		stroke-linecap: round;
+		stroke-linejoin: round;
 	}
 
 	.label {
 		font-family: var(--mono);
-		font-size: 0.8rem;
+		font-size: 0.72rem;
 		letter-spacing: 0.12em;
 		text-transform: uppercase;
 		color: var(--muted);
-	}
-
-	a {
-		font-family: var(--serif);
-		font-size: clamp(1.5rem, 3vw, 2.25rem);
-		color: var(--ink);
-		text-decoration: none;
-		overflow-wrap: anywhere;
-	}
-
-	a:hover {
-		color: var(--accent);
-	}
-
-	@media (max-width: 760px) {
-		li {
-			grid-template-columns: 1fr;
-		}
 	}
 </style>

@@ -14,10 +14,6 @@ export const site = {
 		pt: 'Vitória, ES · UTC−3',
 		en: 'Vitória, Brazil · UTC−3',
 	},
-	status: {
-		pt: 'Aberto a problemas difíceis',
-		en: 'Open to hard problems',
-	},
 	links: {
 		email: 'matheus.corteletti.del@gmail.com',
 		linkedin: 'https://www.linkedin.com/in/matheus-corteletti',

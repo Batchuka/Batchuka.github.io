@@ -1,13 +1,22 @@
 ---
-order: 2
+order: 3
 org: ArcelorMittal Tubarão
-url: https://www.linkedin.com/company/arcelormittal-brasil/
+url: https://brasil.arcelormittal.com/
+logo: /logos/arcelormittal.png
 mark: AM
 role: Estagiário de Manutenção Mecânica
 period: jan. — jul. 2019
 place: Serra, ES · usina siderúrgica integrada
 summary: Estágio em manutenção mecânica numa usina siderúrgica integrada de grande porte, depois do curso técnico em manutenção no Ifes.
-tags: [inspeção de equipamentos, manutenção programada]
+tags:
+  - inspeção de equipamentos
+  - manutenção programada
+  - instrumentação Yokogawa
+  - CLP Siemens
+  - supervisórios
+  - inspeção de caldeiras
+  - inspeção de máquinas térmicas
+  - sistemas elétricos
 photos:
   - src: /photos/am-gerador-diesel.webp
     alt: Selfie de Matheus de capacete e óculos de proteção diante de um grande gerador a diesel.

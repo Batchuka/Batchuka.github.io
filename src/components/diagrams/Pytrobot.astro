@@ -1,0 +1,152 @@
+---
+/*
+ * Máquina de estados do PyTRobot, no modelo do REFramework da UiPath.
+ * SVG desenhado à mão (viewBox 760 x 450); textos nos dois idiomas.
+ */
+import { getLangFromUrl } from '../../i18n/ui';
+
+const lang = getLangFromUrl(Astro.url);
+const text = {
+	pt: {
+		ok: 'sucesso',
+		loaded: 'dados carregados',
+		done: ['transação concluída', 'exceção de negócio'],
+		system: ['exceção de', 'sistema'],
+		empty: ['sem', 'dados'],
+		caption: 'A máquina de estados do PyTRobot, no modelo do REFramework da UiPath.',
+		label: 'Diagrama de estados: Init, Get Transaction, Process Transaction e End.',
+	},
+	en: {
+		ok: 'success',
+		loaded: 'data loaded',
+		done: ['transaction done', 'business exception'],
+		system: ['system', 'exception'],
+		empty: ['no', 'data'],
+		caption: 'PyTRobot’s state machine, modeled on UiPath’s REFramework.',
+		label: 'State diagram: Init, Get Transaction, Process Transaction and End.',
+	},
+}[lang];
+
+const states = [
+	{ name: 'Init', y: 20 },
+	{ name: 'Get Transaction', y: 140 },
+	{ name: 'Process Transaction', y: 260 },
+	{ name: 'End', y: 380 },
+];
+---
+
+<figure class="sm">
+	<svg viewBox="0 0 760 450" role="img" aria-label={text.label}>
+		<defs>
+			<marker
+				id="sm-arrow"
+				viewBox="0 0 10 10"
+				refX="9"
+				refY="5"
+				markerWidth="7"
+				markerHeight="7"
+				orient="auto-start-reverse"
+			>
+				<path d="M 0 0 L 10 5 L 0 10 z" />
+			</marker>
+		</defs>
+
+		<g class="edges">
+			<path d="M 300 68 V 138" marker-end="url(#sm-arrow)" />
+			<path d="M 300 188 V 258" marker-end="url(#sm-arrow)" />
+			<path d="M 420 278 H 470 V 170 H 422" marker-end="url(#sm-arrow)" />
+			<path d="M 420 292 H 620 V 38 H 422" marker-end="url(#sm-arrow)" />
+			<path d="M 180 164 H 90 V 404 H 178" marker-end="url(#sm-arrow)" />
+		</g>
+
+		<g class="labels">
+			<text x="312" y="108">{text.ok}</text>
+			<text x="312" y="228">{text.loaded}</text>
+			<text x="480" y="216">{text.done[0]}</text>
+			<text x="480" y="232">{text.done[1]}</text>
+			<text x="630" y="160">{text.system[0]}</text>
+			<text x="630" y="176">{text.system[1]}</text>
+			<text x="100" y="280">{text.empty[0]}</text>
+			<text x="100" y="296">{text.empty[1]}</text>
+		</g>
+
+		<g class="states">
+			{
+				states.map((s, i) => (
+					<g class:list={['state', { first: i === 0, last: i === states.length - 1 }]}>
+						<rect x="180" y={s.y} width="240" height="48" />
+						{i === states.length - 1 && <rect class="inner" x="185" y={s.y + 5} width="230" height="38" />}
+						<text x="300" y={s.y + 29}>
+							{s.name}
+						</text>
+					</g>
+				))
+			}
+		</g>
+	</svg>
+	<figcaption>{text.caption}</figcaption>
+</figure>
+
+<style>
+	.sm {
+		margin: 2rem 0 0;
+		max-width: 46rem;
+	}
+
+	svg {
+		display: block;
+		width: 100%;
+		height: auto;
+	}
+
+	.edges path {
+		fill: none;
+		stroke: var(--muted);
+		stroke-width: 1.5;
+	}
+
+	marker path {
+		fill: var(--muted);
+	}
+
+	.labels text {
+		font-family: var(--mono);
+		font-size: 12px;
+		fill: var(--muted);
+	}
+
+	.state rect {
+		fill: var(--bg);
+		stroke: var(--ink);
+		stroke-width: 1.5;
+	}
+
+	.state.first rect {
+		fill: var(--card);
+		stroke: var(--card);
+	}
+
+	.state rect.inner {
+		fill: none;
+		stroke-width: 1;
+	}
+
+	.state text {
+		font-family: var(--mono);
+		font-size: 15px;
+		text-anchor: middle;
+		fill: var(--ink);
+	}
+
+	.state.first text {
+		fill: var(--bg);
+	}
+
+	figcaption {
+		margin-top: 0.6rem;
+		font-family: var(--mono);
+		font-size: 0.72rem;
+		line-height: 1.5;
+		color: var(--muted);
+	}
+</style>

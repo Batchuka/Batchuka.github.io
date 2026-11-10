@@ -1,79 +1,123 @@
 ---
 order: 1
 org: WM Trading
-url: https://www.linkedin.com/company/wmtrading/
+url: https://www.wmtrading.com.br/en/
+logo: /logos/wm.png
 mark: WM
 role: RPA Intern → Software Engineer → Senior Software Engineer and Tech Lead
 period: Jun 2021 — Jul 2026
 place: Vitória, Brazil · foreign trade
-summary: I joined as an intern to build RPA bots and left as a senior engineer and tech lead. Along the way I replaced emails and spreadsheets with systems, led a team of four developers and designed the architecture that Simple Hubi grew out of.
+summary: I was hired to build RPA and left as a senior engineer and tech lead of more than 10 critical projects. Along the way, I replaced emails and spreadsheets with systems, led a team of four developers and designed the architecture the startup [Simple Hubi](#simple-hubi) was born from.
 tags:
   - 2,200+ h/year of manual work removed
   - up to 5,000 processes/day
-  - led 4 developers
+  - 4 developers led
   - Java · Python · AWS
 photos:
   - src: /photos/wm-palestra-ml-2021.webp
     alt: Matheus standing and presenting to the team in front of a screen showing games trained with machine learning.
-    caption: A talk on artificial intelligence and machine learning at WM’s 2021 retrospective.
+    caption: A talk on machine learning, 2021.
     position: 35% center
   - src: /photos/wm-mentoria.webp
     alt: Matheus standing behind a colleague, looking at the screen while thinking.
-    caption: Helping a junior developer track down a bug.
+    caption: Helping a junior developer find a bug, 2023.
     position: center 30%
   - src: /photos/wm-equipe-bug.webp
     alt: Three developers around a computer by the office window.
-    caption: Hunting a bug with the team.
+    caption: Hunting a bug with the team, 2026.
     position: center 35%
     marker: { x: 49, y: 31, label: me }
 highlights:
   - label: 2021–2022 · Back office
-    title: Bots that take repetitive work off operations
-    summary: "As an intern I built the Python bots and the Java/Spring Boot and Angular apps that supported them. The strategy was always the same: find out what each team could stop doing."
+    diagram: pytrobot
+    title: Bots for operations, and one standard for all of them
+    summary: "Before writing any automation, I went to understand the process up close, with the people doing the work, and asked what that team could stop doing for good. I built the bots in Python and the Java/Spring Boot and Angular applications that supported them. With so many standalone bots, each written its own way, the problem was no longer the bot but the standard. I took the model from REFramework, the state machine UiPath uses for its own bots, and brought it to Python."
     bullets:
-      - "International freight quotes: driven by flags in the ERP’s Oracle database, a bot emails the client every carrier quote, and the client confirms one with a single click. It freed a logistics employee who did only that."
-      - "Document upload: with the Quality team I standardized file names, mapped the ERP’s document-management API through DevTools and wrote a bot that sweeps the file server and uploads the legal documents five times a day."
-      - "Due diligence: after two years losing the race against captchas, I switched to a human-in-the-loop design. An installable desktop app (Tkinter) fetches the queue of pending checks and does everything except the captcha; it updates itself on every GitHub release."
-      - "Infrastructure: an on-premises Linux server running the bots in Docker, deploys through GitHub Actions with a local runner, and web apps on ECS, RDS MySQL and Angular served by CloudFront."
-  - label: Framework
-    title: PyTRobot, a standard for the bots
-    summary: With so many standalone bots, I needed reuse and a common way to write them.
-    bullets:
-      - "I created PyTRobot (Python Transactional Robot), a state-machine RPA framework that abstracts the usual steps of a corporate bot: check for a job, load its data, process each transaction and write the report."
-      - It is still in use at the company.
+      - gain: +1 person freed
+        icon: person
+        text: "Freight quotes: the bot sends the client the carriers’ quotes and the client picks one with a click. It freed the person who did only that."
+      - gain: +1 h/day per person
+        icon: clock
+        text: "Document upload: with file names standardized alongside the Quality team, a bot uploads the operations documents on its own."
+      - gain: +2 people freed
+        icon: unlock
+        text: "Due diligence: a desktop app does everything but the captcha. Checking every client and supplier, unfeasible before, became routine."
+      - gain: 2,200 h/year
+        icon: bot
+        text: "Other bots for logistics, legal and compliance: together, more than 2,200 fewer hours of manual work a year."
+      - gain: deploy on commit
+        icon: deploy
+        text: "On-premises infrastructure: bots in Docker on Linux servers, deployed automatically on every commit through GitHub Actions."
+      - gain: 1 standard for all
+        icon: standard
+        text: "PyTRobot: a state-machine RPA framework that became the mold for every bot: job, data, transactions, report."
     links:
       - text: PyTRobot ↗
         href: https://github.com/Batchuka/rpa-stateMachine-framework
       - text: CLI ↗
         href: https://github.com/Batchuka/rpa-stateMachine-cli
-  - label: Tax · BYD
-    title: Tax Classification and Document Understanding
-    summary: Declaring goods correctly is the core of a trading company’s business, and the process lived on emails between operations and the customs team, under deadlines backed by heavy fines.
+  - label: 2023 · Document Understanding and NCM
+    diagram: fiscal
+    title: From invoice to NCM classification, without email
+    summary: "In 2023, I was handed a mission. A new client, BYD, was about to sharply increase the number of invoices to absorb. It was one or the other: either we automated the manual process, or the customs clearance team would have to double."
     bullets:
-      - "When BYD arrived (more than 200 invoices a month, against 1.2 for a typical client, with up to 800 items each), the company had to either double the customs team or automate. I built a web app where operations only uploads the invoice and the customs broker only classifies what the system points to."
-      - "I split extraction into a configurable Document Understanding microservice: OCR on Lambda, text normalization, extraction driven by per-layout JSON and a transformation step using EventBridge’s input-path pattern. It now handles invoices, packing lists, exchange contracts and bills of lading."
-      - "Having the process in a system made room for triggers that anticipate problems, such as import licenses that must be issued before shipping, and, in 2025, an LLM layer that suggests classifications from the client’s history."
-      - "I kept every document and JSON in S3 to train extraction models later. BYD, the most complex client in the portfolio, became the fastest one to classify."
+      - gain: "no team doubling"
+        icon: person
+        text: "200 invoices a month, with up to 800 items each: operations only uploads the invoice and the customs broker only confirms what the system suggests."
+      - gain: "4 document types"
+        icon: doc
+        text: "Two Spring Boot microservices, DU and CLF, configurable per layout: invoices, packing lists, exchange contracts and bills of lading."
+      - gain: "license before shipping"
+        icon: bell
+        text: "With the process in a system came triggers that anticipate problems, such as a still-pending import license."
+      - gain: "suggested NCM"
+        icon: spark
+        text: "Bedrock and a FAISS vector search suggest the classification from the client’s past classifications."
+      - gain: "BYD: the fastest"
+        icon: bolt
+        text: "BYD, the most complex client in the portfolio, became the fastest to classify. Everything is kept in S3 to train models in the future."
   - label: 2023–2024 · Platform
+    diagram: plataforma
     title: Event bus and route orchestrator
-    summary: The company decided to enter cross-border retail, expecting 5,000 small import processes a day. I started leading four developers, two backend and two frontend, and designing how every system would talk to the others.
+    summary: "After the success with BYD, the company decided to take the solution to a digital import product for individual buyers. On just one of the marketplaces under consideration, that meant 5,000 processes a day, and the integrations and requests of every system would more than double. I started leading four developers and, in under three months, designed a small architecture, using only AWS services, that put the microservices, isolated until then, to run the whole process together. I took the model from industrial networks."
     bullets:
-      - "Instead of AMQP or MQTT, I built the messaging on AWS services, inspired by industrial networks: RX and TX buses on EventBridge, a single master, and domain apps that announce what they can do, as in OPC UA."
-      - "I wrote the eventbus library, which turns Spring application events into bus messages. Developers only publish events; the domain never knows it is being orchestrated."
-      - "The orchestrator runs “routes” that the business declares in a web screen, creates the bus rules by itself and, when nobody answers for a step, tells the team something is missing."
-      - "Inside, two threads: one polls SQS with a TCP-inspired back-off, the other processes events in timestamp order through a heap. With several instances on Elastic Beanstalk, the SQS visibility timeout prevents double processing."
-      - The project changed course in 2024 and became the seed of Simple Hubi, another company in the group.
+      - gain: "< 3 months"
+        icon: clock
+        text: "Only AWS services, modeled on an industrial network: RX and TX buses on EventBridge, a single master and a protocol of my own."
+      - gain: "0 refactoring"
+        icon: plug
+        text: "eventbus library: with AOP, internal Spring events become bus events. Not a single business rule had to change."
+      - gain: "ownerless step alerts"
+        icon: bell
+        text: "The orchestrator runs routes the business declares in a web screen and, when no one can perform a step, it warns the team."
+      - gain: "5,000 processes/day"
+        icon: bolt
+        text: "SQS polling with back-off borrowed from TCP; the visibility timeout keeps the same event from being processed twice."
+      - gain: "became Simple Hubi"
+        icon: spark
+        text: "The project changed course in 2024 and became the seed of [Simple Hubi](#simple-hubi), another company in the group."
     links:
       - text: demo-event-driven ↗
         href: https://github.com/Batchuka/demo-event-driven
       - text: simplehubi.com ↗
         href: https://simplehubi.com/
-  - label: 2024–2026 · Architecture
+  - label: 2025–2026 · Architecture
     title: Transit, Banking and the BPMS
-    summary: In the senior years I worked more as the architect of the automations than as a developer, and helped roll out an internal BPMS.
+    summary: "With the architecture in place, the Simple Hubi project moved to a third-party team and I went back to the company’s internal systems. The question changed from “how do I automate this task” to “how do these automations fit together”, and I worked more as an architect than as a developer."
     bullets:
-      - "Transit: coordinates two Lambdas, one that tracks containers through port and carrier APIs and one that updates shipping and arrival dates in the ERP, from where they reach clients through BI."
-      - "Banking: a desk where every team requests payments from Finance, queued by urgency, plus the automated booking of exchange contracts in the ERP."
-      - I integrated these apps into the BPMS before leaving.
-footnote: "Also built, not detailed here: RADAR linking and checks, process closing, ERP master-data updates, email extraction, the Despacho Ágil and Nota Fiscal apps and the webhooks microservice."
+      - gain: "+1 person freed"
+        icon: person
+        text: "Transit: reads the carriers’ websites and updates the shipping and arrival dates of each cargo in the ERP. It freed one person in logistics."
+      - gain: "−4 threads per process"
+        icon: mail
+        text: "Banking: a single channel between every department and Finance, instead of emails; on average, four fewer threads per process."
+      - gain: "predictable FX"
+        icon: shield
+        text: "Banking also brought predictability and stability to the foreign exchange contract flow, which is critical."
+      - gain: "automatic reconciliation"
+        icon: plug
+        text: "Integration with financial institutions to reconcile debits automatically."
+      - gain: "BPMS in place"
+        icon: standard
+        text: "Finally, I helped roll out the company’s internal BPMS and integrated these applications into it."
 ---

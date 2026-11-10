@@ -1,17 +1,22 @@
 ---
-/* Cabeçalho comum das seções: rótulo numerado, título serifado grande e uma linha de apoio. */
+/*
+ * Cabeçalho comum das seções: rótulo numerado, título serifado grande e uma linha de apoio.
+ * Com cite, o título é uma citação: entre aspas, um pouco menor, com o autor embaixo.
+ */
 interface Props {
 	eyebrow: string;
 	title: string;
 	lead?: string;
+	cite?: string;
 }
 
-const { eyebrow, title, lead } = Astro.props;
+const { eyebrow, title, lead, cite } = Astro.props;
 ---
 
 <header class="head">
 	<p class="eyebrow">{eyebrow}</p>
-	<h2>{title}</h2>
+	{cite ? <h2 class="quote">“{title}”</h2> : <h2>{title}</h2>}
+	{cite && <p class="cite">— {cite}</p>}
 	{lead && <p class="lead">{lead}</p>}
 </header>
 
@@ -26,6 +31,21 @@ const { eyebrow, title, lead } = Astro.props;
 		font-size: clamp(2.6rem, 6vw, 5.4rem);
 		line-height: 0.98;
 		letter-spacing: -0.035em;
+	}
+
+	.quote {
+		font-size: clamp(2.2rem, 4.6vw, 4rem);
+		line-height: 1.08;
+		letter-spacing: -0.025em;
+	}
+
+	.cite {
+		margin-top: 1.5rem;
+		font-family: var(--mono);
+		font-size: 0.85rem;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--accent);
 	}
 
 	.lead {

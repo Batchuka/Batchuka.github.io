@@ -1,6 +1,6 @@
 /*
- * Eventos, cursos livres e idiomas da seção "Pesquisa e formação".
- * Fonte: certificados em J:\Meu Drive\formação\Certificados e Certificados Alura.
+ * Eventos da seção Formação e idiomas, mostrados logo abaixo dos números do herói.
+ * Fonte: certificados em J:\Meu Drive\formação\Certificados.
  */
 export const events = [
 	{
@@ -44,18 +44,13 @@ export const events = [
 	},
 ];
 
-export const courses = {
-	label: { pt: 'Cursos livres', en: 'Short courses' },
-	text: {
-		pt: '31 cursos na Alura: Java, Python (orientação a objetos, Django, Flask), C#, microsserviços e infraestrutura como código na AWS (CDK, Terraform, Ansible), redes, estatística e regressão com Python, PowerShell, macros no Excel e gestão de produto.',
-		en: '31 Alura courses: Java, Python (OOP, Django, Flask), C#, microservices and infrastructure as code on AWS (CDK, Terraform, Ansible), networking, statistics and regression with Python, PowerShell, Excel macros and product management.',
-	},
-};
 
 export const languages = {
 	label: { pt: 'Idiomas', en: 'Languages' },
 	text: {
-		pt: 'Português nativo · Inglês avançado (C1)',
-		en: 'Portuguese, native · English, advanced (C1)',
+		pt: 'Português nativo · Inglês avançado (C1) · Aprendendo Italiano',
+		en: 'Portuguese, native · English, advanced (C1) · Learning Italian',
 	},
+	/* Depois do texto, na fonte Noto Color Emoji (o Windows 10 não tem o 🤌). */
+	emoji: '🤌🍕',
 };

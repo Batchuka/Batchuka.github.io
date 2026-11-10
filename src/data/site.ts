@@ -14,6 +14,11 @@ export const site = {
 		pt: 'Vitória, ES · UTC−3',
 		en: 'Vitória, Brazil · UTC−3',
 	},
+	/* Cidadania italiana: pode morar e trabalhar na União Europeia sem visto. */
+	citizenship: {
+		pt: 'Cidadão italiano · pode residir na UE',
+		en: 'Italian citizen · free to live and work in the EU',
+	},
 	links: {
 		email: 'matheus.corteletti.del@gmail.com',
 		linkedin: 'https://www.linkedin.com/in/matheus-corteletti',

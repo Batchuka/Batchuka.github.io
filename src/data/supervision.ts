@@ -11,8 +11,8 @@ const spec = `${lab}/spec-tennessee-eastman`;
 export const supervision = {
 	pt: {
 		eyebrow: '03 / Atualmente',
-		title: 'Uma boa abstração significa ignorar o detalhe certo no momento certo.',
-		cite: 'Mary Shaw',
+		title: 'Estude muito o que mais lhe interessa, da maneira mais indisciplinada, irreverente e original possível.',
+		cite: 'Richard Feynman',
 		lead: 'Uma planta química simulada, construída peça por peça, e a pergunta que ela levantou.',
 		steps: [
 			{
@@ -78,8 +78,8 @@ export const supervision = {
 	},
 	en: {
 		eyebrow: '03 / Now',
-		title: 'Good abstraction is ignoring the right detail at the right times.',
-		cite: 'Mary Shaw',
+		title: 'Study hard what interests you the most in the most undisciplined, irreverent and original manner possible.',
+		cite: 'Richard Feynman',
 		lead: 'A simulated chemical plant, built piece by piece, and the question it raised.',
 		steps: [
 			{

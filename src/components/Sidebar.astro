@@ -20,6 +20,7 @@ const sections = ['experience', 'research', 'supervision', 'profile', 'contact']
 		</span>
 	</a>
 	<p class="place"><span class="dot" aria-hidden="true"></span>{site.place[lang]}</p>
+	<p class="citizen"><span class="flag" aria-hidden="true"></span>{site.citizenship[lang]}</p>
 
 	<nav class="side-nav" aria-label={lang === 'pt' ? 'Seções' : 'Sections'}>
 		<ol>
@@ -128,6 +129,24 @@ const sections = ['experience', 'research', 'supervision', 'profile', 'contact']
 		color: var(--muted);
 	}
 
+	/* Cidadania, logo abaixo do local, com a bandeira italiana desenhada em três faixas. */
+	.citizen {
+		display: flex;
+		align-items: center;
+		gap: 0.6rem;
+		margin-top: 0.5rem;
+		font-size: 0.95rem;
+		color: var(--muted);
+	}
+
+	.flag {
+		flex: none;
+		width: 0.85rem;
+		height: 0.6rem;
+		background: linear-gradient(90deg, #009246 33.3%, #f4f5f0 33.3% 66.6%, #ce2b37 66.6%);
+		box-shadow: 0 0 0 1px var(--line);
+	}
+
 	.dot {
 		width: 0.55rem;
 		height: 0.55rem;
@@ -212,6 +231,11 @@ const sections = ['experience', 'research', 'supervision', 'profile', 'contact']
 		.place {
 			margin-top: 1rem;
 			font-size: 0.9rem;
+		}
+
+		.citizen {
+			margin-top: 0.3rem;
+			font-size: 0.85rem;
 		}
 
 		.side-nav {

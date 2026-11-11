@@ -22,5 +22,5 @@ photos:
   - src: /photos/ifes-yolo-lancas.mp4
     poster: /photos/ifes-yolo-lancas.webp
     alt: Video of oxygen lance tips seen from above, with YOLO boxes marking the lance and each hole.
-    caption: A YOLO network that measures the holes in ArcelorMittal's oxygen lances. Artificial Intelligence course.
+    caption: A YOLO network that measures the holes in oxygen lances. Artificial Intelligence course.
 ---

@@ -22,5 +22,5 @@ photos:
   - src: /photos/ifes-yolo-lancas.mp4
     poster: /photos/ifes-yolo-lancas.webp
     alt: Vídeo de pontas de lanças de oxigênio vistas de cima, com caixas da rede YOLO marcando a lança e cada furo.
-    caption: Rede YOLO que mede os furos das lanças de oxigênio da ArcelorMittal. Inteligência Artificial.
+    caption: Rede YOLO que mede os furos das lanças de oxigênio. Inteligência Artificial.
 ---

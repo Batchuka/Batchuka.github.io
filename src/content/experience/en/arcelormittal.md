@@ -26,8 +26,4 @@ photos:
     alt: Selfie of Matheus in an ArcelorMittal hard hat, mirrored glasses and a respirator.
     caption: Full protective gear to inspect the coke plant conveyors.
     position: center 45%
-  - src: /photos/am-locomotiva.webp
-    alt: Two technicians in blue overalls in front of a yellow coke-transport locomotive, next to a tool cart.
-    caption: Bearing maintenance on a coke plant locomotive.
-    position: 60% center
 ---

@@ -26,8 +26,4 @@ photos:
     alt: Selfie de Matheus de capacete da ArcelorMittal, óculos espelhados e máscara respiratória.
     caption: EPI completo para inspecionar as esteiras da coqueria.
     position: center 45%
-  - src: /photos/am-locomotiva.webp
-    alt: Dois técnicos de macacão azul diante de uma locomotiva amarela de transporte de coque, com um carrinho de ferramentas.
-    caption: Manutenção dos rolamentos de uma locomotiva da coqueria.
-    position: 60% center
 ---

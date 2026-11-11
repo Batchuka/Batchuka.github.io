@@ -70,6 +70,7 @@ export const home = {
 			cite: 'Theodore von Kármán',
 			events: 'Eventos',
 			byproducts: 'Feito durante o curso',
+			play: 'Assistir',
 		},
 		contact: {
 			eyebrow: '05 / Contato',
@@ -149,6 +150,7 @@ export const home = {
 			cite: 'Theodore von Kármán',
 			events: 'Events',
 			byproducts: 'Built during the degree',
+			play: 'Watch',
 		},
 		contact: {
 			eyebrow: '05 / Contact',

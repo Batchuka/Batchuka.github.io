@@ -117,6 +117,16 @@ const education = defineCollection({
 		/* Subprodutos: nomes de arquivo de src/content/projects/<idioma>/, em grade compacta. */
 		projects: z.array(z.string()).default([]),
 		photos: z.array(photo).default([]),
+		/* Vídeo do YouTube embutido (id do vídeo, capa local em public/photos/). */
+		video: z
+			.object({
+				youtube: z.string(),
+				title: z.string(),
+				poster: z.string(),
+				caption: z.string().optional(),
+				duration: z.string().optional(),
+			})
+			.optional(),
 	}),
 });
 

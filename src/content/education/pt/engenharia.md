@@ -14,6 +14,12 @@ links:
     href: https://github.com/Batchuka/tep-monografia
   - text: pesquisa ↗
     href: https://github.com/Green-Cinnamon-Labs/gajeiro-research
+video:
+  youtube: gRJCXFoU3RM
+  title: "Defesa do TCC: Supervisão Declarativa do Processo Tennessee Eastman com Kubernetes"
+  poster: /photos/ifes-defesa-tcc.webp
+  duration: 54 min
+  caption: A defesa do TCC, em vídeo. Os capítulos estão na descrição do YouTube.
 photos:
   - src: /photos/ifes-robo-equilibrista.mp4
     poster: /photos/ifes-robo-equilibrista.webp

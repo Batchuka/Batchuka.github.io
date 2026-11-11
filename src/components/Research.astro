@@ -10,6 +10,7 @@ import { getLangFromUrl } from '../i18n/ui';
 import { inline } from '../utils/inline';
 import Gallery from './Gallery.astro';
 import SectionHead from './SectionHead.astro';
+import YouTube from './YouTube.astro';
 
 const lang = getLangFromUrl(Astro.url);
 const copy = home[lang].research;
@@ -55,6 +56,16 @@ const month = (d: string) => {
 									</a>
 								))}
 							</p>
+						)}
+						{data.video && (
+							<YouTube
+								id={data.video.youtube}
+								title={data.video.title}
+								poster={data.video.poster}
+								caption={data.video.caption}
+								duration={data.video.duration}
+								play={copy.play}
+							/>
 						)}
 						{data.projects.length > 0 && (
 							<div class="byproducts">

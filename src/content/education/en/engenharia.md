@@ -14,6 +14,12 @@ links:
     href: https://github.com/Batchuka/tep-monografia
   - text: research ↗
     href: https://github.com/Green-Cinnamon-Labs/gajeiro-research
+video:
+  youtube: gRJCXFoU3RM
+  title: "Thesis defense: Declarative supervision of the Tennessee Eastman process with Kubernetes"
+  poster: /photos/ifes-defesa-tcc.webp
+  duration: 54 min
+  caption: The thesis defense on video, in Portuguese. Chapters are in the YouTube description.
 photos:
   - src: /photos/ifes-robo-equilibrista.mp4
     poster: /photos/ifes-robo-equilibrista.webp

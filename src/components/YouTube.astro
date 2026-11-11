@@ -1,0 +1,129 @@
+---
+/*
+ * Vídeo do YouTube em modo leve: mostra a capa (arquivo local) com um botão de play, e o player
+ * só é carregado no clique, pelo youtube-nocookie.com. Sem JavaScript, o link abre o vídeo no
+ * YouTube.
+ */
+interface Props {
+	id: string;
+	title: string;
+	poster: string;
+	caption?: string;
+	duration?: string;
+	play: string;
+}
+
+const { id, title, poster, caption, duration, play } = Astro.props;
+---
+
+<figure class="yt">
+	<a class="frame" href={`https://youtu.be/${id}`} data-yt={id} data-title={title}>
+		<img src={poster} alt="" loading="lazy" decoding="async" />
+		<span class="play">
+			<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l12.5-7.5z" /></svg>
+			{play}
+			{duration && <span class="dur">· {duration}</span>}
+		</span>
+		<span class="sr-only">{title}</span>
+	</a>
+	{caption && <figcaption>{caption}</figcaption>}
+</figure>
+
+<script>
+	/* Troca a capa pelo player no clique; Ctrl/Cmd+clique continua abrindo o YouTube. */
+	document.querySelectorAll<HTMLAnchorElement>('a[data-yt]').forEach((a) => {
+		a.addEventListener('click', (ev) => {
+			if (ev.ctrlKey || ev.metaKey || ev.shiftKey || ev.button !== 0) return;
+			ev.preventDefault();
+			const frame = document.createElement('iframe');
+			frame.src = `https://www.youtube-nocookie.com/embed/${a.dataset.yt}?autoplay=1&rel=0`;
+			frame.title = a.dataset.title ?? '';
+			frame.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
+			frame.allowFullscreen = true;
+			frame.className = 'frame';
+			a.replaceWith(frame);
+		});
+	});
+</script>
+
+<style>
+	.yt {
+		max-width: 50rem;
+		margin: 2.25rem 0 0;
+	}
+
+	.frame {
+		position: relative;
+		display: block;
+		width: 100%;
+		aspect-ratio: 16 / 9;
+		border: 1px solid var(--line);
+		background: var(--line-soft);
+	}
+
+	/* O iframe é criado pelo script e não recebe o atributo de escopo do Astro. */
+	.yt :global(iframe.frame) {
+		display: block;
+		width: 100%;
+		aspect-ratio: 16 / 9;
+		border: 1px solid var(--line);
+	}
+
+	img {
+		display: block;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+
+	/* Etiqueta no canto inferior esquerdo, onde a capa do slide não tem texto. */
+	.play {
+		position: absolute;
+		left: 4%;
+		bottom: 9%;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.55rem;
+		padding: 0.6rem 1rem 0.6rem 0.85rem;
+		background: var(--ink);
+		color: var(--accent-ink);
+		font-family: var(--mono);
+		font-size: 0.82rem;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+		box-shadow: 0 0.3rem 1rem rgb(0 0 0 / 0.2);
+		transition: background 0.15s ease;
+	}
+
+	.play svg {
+		width: 1rem;
+		height: 1rem;
+		fill: currentColor;
+	}
+
+	.dur {
+		opacity: 0.7;
+	}
+
+	.frame:hover .play,
+	.frame:focus-visible .play {
+		background: var(--accent);
+	}
+
+	.sr-only {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		overflow: hidden;
+		clip-path: inset(50%);
+		white-space: nowrap;
+	}
+
+	figcaption {
+		margin-top: 0.6rem;
+		font-family: var(--mono);
+		font-size: 0.72rem;
+		line-height: 1.5;
+		color: var(--muted);
+	}
+</style>

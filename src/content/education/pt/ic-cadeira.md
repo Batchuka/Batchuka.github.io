@@ -1,9 +1,9 @@
 ---
 order: 3
-kind: Iniciação científica
+kind: Iniciação científica · bolsista PIBIC
 title: Robótica e instrumentação de cadeira de rodas
 place: Ifes · orientação de Marco Antonio de Souza Leite Cuadros
-period: "2021"
+period: 2020 — 2021
 summary: Começou como uma rede de sensores ultrassônicos via I²C para instrumentar uma cadeira de rodas. Com as restrições da pandemia, virou um estudo de arquitetura de software e navegação autônoma.
 bullets:
   - Estudei ROS, SLAM, localização com filtro de Kalman estendido, PythonRobotics e arquiteturas de robótica em nuvem para processamento e controle remoto.

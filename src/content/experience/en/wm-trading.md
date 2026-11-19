@@ -4,12 +4,12 @@ org: WM Trading
 url: https://www.wmtrading.com.br/en/
 logo: /logos/wm.png
 mark: WM
-role: RPA Intern → Software Engineer → Senior Software Engineer and Tech Lead
+role: RPA Intern → Technology Solutions Developer (mid-level)
 period: Jun 2021 — Jul 2026
 place: Vitória, Brazil · foreign trade
-summary: I was hired to build RPA and left as a senior engineer and tech lead of more than 10 critical projects. Along the way, I replaced emails and spreadsheets with systems, led a team of four developers and designed the architecture the startup [Simple Hubi](#simple-hubi) was born from.
+summary: I was hired to build RPA and left as a mid-level developer, acting as tech lead of more than 10 critical projects. Along the way, I replaced emails and spreadsheets with systems, led a team of four developers and designed the architecture the startup [Simple Hubi](#simple-hubi) was born from.
 tags:
-  - 2,200+ h/year of manual work removed
+  - 4,500+ h/year of manual work removed
   - up to 5,000 processes/day
   - 4 developers led
   - Java · Python · AWS
@@ -33,18 +33,15 @@ highlights:
     title: Bots for operations, and one standard for all of them
     summary: "Before writing any automation, I went to understand the process up close, with the people doing the work, and asked what that team could stop doing for good. I built the bots in Python and the Java/Spring Boot and Angular applications that supported them. With so many standalone bots, each written its own way, the problem was no longer the bot but the standard. I took the model from REFramework, the state machine UiPath uses for its own bots, and brought it to Python."
     bullets:
+      - gain: BI kept current
+        icon: doc
+        text: "Document upload: with file names standardized alongside the Quality team, a bot uploads the operations documents to the ERP on its own."
       - gain: +1 person freed
-        icon: person
-        text: "Freight quotes: the bot sends the client the carriers’ quotes and the client picks one with a click. It freed the person who did only that."
-      - gain: +1 h/day per person
-        icon: clock
-        text: "Document upload: with file names standardized alongside the Quality team, a bot uploads the operations documents on its own."
-      - gain: +2 people freed
         icon: unlock
         text: "Due diligence: a desktop app does everything but the captcha. Checking every client and supplier, unfeasible before, became routine."
-      - gain: 2,200 h/year
+      - gain: 4,500+ h/year
         icon: bot
-        text: "Other bots for logistics, legal and compliance: together, more than 2,200 fewer hours of manual work a year."
+        text: "Together, the bots for logistics, legal and compliance removed more than 4,500 hours of manual work a year: 2.5 full-time people."
       - gain: deploy on commit
         icon: deploy
         text: "On-premises infrastructure: bots in Docker on Linux servers, deployed automatically on every commit through GitHub Actions."

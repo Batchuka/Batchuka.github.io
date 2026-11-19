@@ -22,12 +22,12 @@ export const home = {
 			items: [
 				{
 					value: '5 anos',
-					text: 'de engenharia de software na WM Trading, de estagiário a líder técnico',
+					text: 'de engenharia de software na WM Trading, de estagiário a desenvolvedor pleno e líder técnico',
 					link: 'WM Trading',
 					href: '#wm-trading',
 				},
 				{
-					value: '2.200 h',
+					value: '4.500 h',
 					text: 'de trabalho manual eliminadas por ano em logística, jurídico e compliance',
 					link: 'automações',
 					href: '#wm-trading-1',
@@ -102,12 +102,12 @@ export const home = {
 			items: [
 				{
 					value: '5 years',
-					text: 'of software engineering at WM Trading, from intern to tech lead',
+					text: 'of software engineering at WM Trading, from intern to mid-level developer and tech lead',
 					link: 'WM Trading',
 					href: '#wm-trading',
 				},
 				{
-					value: '2,200 h',
+					value: '4,500 h',
 					text: 'of manual work removed per year in logistics, legal and compliance',
 					link: 'automations',
 					href: '#wm-trading-1',

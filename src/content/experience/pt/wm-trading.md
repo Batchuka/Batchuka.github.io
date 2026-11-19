@@ -4,12 +4,12 @@ org: WM Trading
 url: https://www.wmtrading.com.br/
 logo: /logos/wm.png
 mark: WM
-role: Estagiário de RPA → Engenheiro de Software → Engenheiro de Software Sênior e Líder Técnico
+role: Estagiário de RPA → Desenvolvedor de Soluções Tecnológicas Pleno
 period: jun. 2021 — jul. 2026
 place: Vitória, ES · comércio exterior
-summary: Fui contratado para fazer RPA e saí como engenheiro sênior e líder técnico de mais de 10 projetos críticos. No caminho, troquei e-mails e planilhas por sistemas, conduzi uma equipe de quatro desenvolvedores e desenhei a arquitetura de onde nasceu a startup [Simple Hubi](#simple-hubi).
+summary: Fui contratado para fazer RPA e saí como desenvolvedor pleno, atuando como líder técnico de mais de 10 projetos críticos. No caminho, troquei e-mails e planilhas por sistemas, conduzi uma equipe de quatro desenvolvedores e desenhei a arquitetura de onde nasceu a startup [Simple Hubi](#simple-hubi).
 tags:
-  - 2.200+ h/ano de trabalho manual eliminadas
+  - 4.500+ h/ano de trabalho manual eliminadas
   - até 5.000 processos/dia
   - 4 devs liderados
   - Java · Python · AWS
@@ -33,18 +33,15 @@ highlights:
     title: Robôs para a operação, e um padrão para todos eles
     summary: "Antes de escrever qualquer automação, eu ia entender o processo de perto, com quem fazia o trabalho, e perguntava o que aquele setor podia parar de fazer de vez. Fiz os robôs em Python e as aplicações em Java/Spring Boot e Angular que davam suporte a eles. Com tantos robôs isolados, cada um escrito de um jeito, o problema deixou de ser o robô e passou a ser o padrão. Fui buscar o modelo no REFramework, a máquina de estados que a UiPath usa nos robôs dela, e o trouxe para Python."
     bullets:
+      - gain: BI em dia
+        icon: doc
+        text: "Upload no GED: com a nomenclatura padronizada junto à Qualidade, um robô sobe os documentos do operacional para o ERP sozinho."
       - gain: +1 pessoa livre
-        icon: person
-        text: "Cotação de frete: o robô manda ao cliente as cotações dos armadores e ele escolhe com um clique. Liberou quem fazia só isso."
-      - gain: +1 h/dia por pessoa
-        icon: clock
-        text: "Upload no GED: com a nomenclatura padronizada junto à Qualidade, um robô sobe os documentos do operacional sozinho."
-      - gain: +2 pessoas livres
         icon: unlock
         text: "Due diligence: um app desktop faz tudo, menos o captcha. Checar todos os clientes e fornecedores, antes inviável, virou rotina."
-      - gain: 2.200 h/ano
+      - gain: 4.500+ h/ano
         icon: bot
-        text: "Outros robôs para logística, jurídico e compliance: somados, mais de 2.200 horas de trabalho manual a menos por ano."
+        text: "Somados, os robôs de logística, jurídico e compliance tiraram mais de 4.500 horas de trabalho manual por ano: 2,5 pessoas."
       - gain: deploy no commit
         icon: deploy
         text: "Infraestrutura on-premises: robôs em Docker em servidores Linux, com deploy automático a cada commit pelo GitHub Actions."

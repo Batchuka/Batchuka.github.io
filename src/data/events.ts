@@ -48,8 +48,8 @@ export const events = [
 export const languages = {
 	label: { pt: 'Idiomas', en: 'Languages' },
 	text: {
-		pt: 'Português nativo · Inglês avançado (C1) · Aprendendo Italiano',
-		en: 'Portuguese, native · English, advanced (C1) · Learning Italian',
+		pt: 'Português nativo · Inglês avançado (C1)',
+		en: 'Portuguese, native · English, advanced (C1)',
 	},
 	/* Depois do texto, na fonte Noto Color Emoji (o Windows 10 não tem o 🤌). */
 	emoji: '🤌🍕',

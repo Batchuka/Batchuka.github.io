@@ -53,7 +53,7 @@ const { hero, stats } = home[lang];
 		<p class="langs">
 			<span class="eyebrow">{languages.label[lang]}</span>
 			<span>
-				{languages.text[lang]} <span class="emoji">{languages.emoji}</span>
+				{languages.text[lang]}
 			</span>
 		</p>
 	</div>
@@ -248,11 +248,6 @@ const { hero, stats } = home[lang];
 		gap: 0.5rem 1.5rem;
 		margin-top: 1.75rem;
 		color: var(--muted);
-	}
-
-	/* Emoji numa fonte própria, carregada só com estes caracteres em Base.astro. */
-	.emoji {
-		font-family: 'Noto Color Emoji', sans-serif;
 	}
 
 	.note {
